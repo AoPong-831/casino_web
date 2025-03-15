@@ -18,11 +18,8 @@ class User(db.Model):
 def hello():
     return "hello world"
 
-@app.route("/users")
-def users():
-    users = User.query.all()
-    return render_template("users.html", users=users)
-
+#CRUD
+#C
 @app.route("/add_user", methods=["GET", "POST"])
 def add_user():
     if request.method == 'POST':
@@ -36,6 +33,33 @@ def add_user():
         
         return redirect(url_for('users'))
     return render_template('add_user.html')
+
+#R
+@app.route("/users")
+def users():
+    users = User.query.all()
+    return render_template("users.html", users=users)
+
+#U
+@app.route('/edit_user/<int:id>', methods=['GET', 'POST'])
+def edit_user(id):
+    user = User.query.get_or_404(id)
+
+    if request.method == 'POST':
+        user.name = request.form['name']
+        user.password = request.form['password']
+        db.session.commit()
+        return redirect(url_for('users'))
+    
+    return render_template('edit_user.html', user=user)
+
+#D
+@app.route('/delete_user/<int:id>', methods=['POST'])
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for('users'))
 
 
 @app.route("/index")

@@ -9,7 +9,12 @@
     <h1>ユーザー一覧</h1>
     <ul>
         {% for user in users %}
-        <li>{{ user.name }} - {{ user.password }}</li>
+        <li>{{ user.name }} - {{ user.password }}
+            <a href="{{ url_for('edit_user', id=user.id) }}">編集</a>
+            <form action="{{ url_for('delete_user', id=user.id) }}" method="POST" style="display:inline;">
+                <button type="submit">削除</button>
+            </form>
+        </li>
         {% endfor %}
     </ul>
 </body>
