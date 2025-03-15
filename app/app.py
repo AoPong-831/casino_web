@@ -8,11 +8,12 @@ db = SQLAlchemy(app)
 # モデル定義（例：User）
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False, unique=True)  # 名前をユニークに
     password = db.Column(db.String(100), unique=True, nullable=False)
 
     def __repr__(self):
         return f'<User {self.name}>'
+
 
 @app.route("/")
 def hello():
@@ -60,6 +61,13 @@ def delete_user(id):
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('users'))
+
+
+#userの詳細ページ
+@app.route('/user/<int:id>')
+def user_detail(id):
+    user = User.query.get_or_404(id)
+    return render_template('user_detail.html', user=user)
 
 
 @app.route("/index")
