@@ -8,13 +8,14 @@
 <body>
     <h1>ユーザーを追加</h1>
     <form method="POST">
+        {{ form.hidden_tag() }}
         <label for="name">名前:</label>
-        <input type="text" id="name" name="name" required>
+        {{ form.name(size=32) }}
         <br>
         <label for="password">パスワード:</label>
-        <input type="password" id="password" name="password" required>
+        {{ form.password(size=32) }}
         <br>
-        <button type="submit">追加</button>
+        {{ form.submit() }}
     </form>
 </body>
 </html>
