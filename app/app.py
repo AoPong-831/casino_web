@@ -9,7 +9,7 @@ DATABASE_URL = os.environ.get("postgres://u9ksot7i4tclrr:p325c32f4abfd8f0f9da40c
 
 #ローカルで開発する場合のフォールバック
 if not DATABASE_URL:
-    DATABASE_URL = "sqlite://local.db" #SQLiteを使う
+    DATABASE_URL = "sqlite:///local.db" #SQLiteを使う
 
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
