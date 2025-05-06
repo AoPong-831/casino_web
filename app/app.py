@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 #環境変数から DATABASE_URL を取得(Herokuでは自動設定される)
-DATABASE_URL = os.environ.get("postgres://u9ksot7i4tclrr:p325c32f4abfd8f0f9da40ccaba8d89d36f548b07d6c6021421d78b1c30b3dd07@ce0lkuo944ch99.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/dfa72fs3dgt167")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 #ローカルで開発する場合のフォールバック
 if not DATABASE_URL:
