@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}TOPページ{% endblock %}
+
+{% block content %}
+<h1>ランキング</h1>
+{% if data == [] %}
+    <p>ランキングはありません</p>
+{% else %}
+    <table border = "1">
+        <tr>
+            <th>順位</th>
+            <th>名前</th>
+            <th>ポイント</th>
+        </tr>
+        {% for user in users %}
+            <tr>
+                <th>{{ user.id }}</th>
+                <th><a href="/{{ user.name }}/data">{{ user.name }}</a></th>
+                <th>{{ user.point }}</th>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+{% endblock %}

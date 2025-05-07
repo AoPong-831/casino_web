@@ -1,4 +1,4 @@
-from flask import Flask,render_template # type: ignore
+from flask import Flask,render_template,request,redirect,url_for # type: ignore
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -20,7 +20,10 @@ db = SQLAlchemy(app)
 # --- モデル定義 ---
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
+    name = db.Column(db.String(20), nullable=False)
+    pw = db.Column(db.Integer, nullable=False)
+    point = db.Column(db.Integer)
+    #login_date = ...
 
 # --- 初期化用ルート (最初だけ使う) ---
 @app.route("/initdb")
@@ -28,19 +31,27 @@ def init_db():
     db.create_all() #テーブル作成
     return "DB Initialized"
 
-# --- 例：ユーザー追加ルート（簡易） ---
-@app.route('/add/<username>')
-def add_user(username):
-    user = User(name=username)
-    db.session.add(user)
-    db.session.commit()
-    return f"Added {username}"
+# --- ユーザー追加(リンク直以外でアクセス禁止) ---
+@app.route('/add_user', methods=["GET","POST"])
+def add_user():
+    if request.method == "POST":
+        #htmlの入力欄からとってくる値
+        name = request.form["name"]
+        pw = request.form["birth"]
+        
+        #DBに書き込む
+        user = User(name=name,pw=pw,point=0)
+        db.session.add(user)
+        db.session.commit()
 
-# --- 確認用ルート ---
-@app.route('/users')
-def list_users():
+        return redirect(url_for("usres"))
+    return render_template("add_user.html")
+
+# --- ランキング表示 ---
+@app.route('/ranking')
+def ranking():
     users = User.query.all()
-    return '<br>'.join([u.name for u in users])
+    return render_template("ranking.html",users=users)
 
 # --- 以下、自前ルート ---
 @app.route("/")
