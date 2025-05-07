@@ -1,8 +1,10 @@
 from flask import Flask,render_template,request,redirect,url_for # type: ignore
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
 
 app = Flask(__name__)
+app.secret_key = "your-secret-key" #これないとエラー出るらしい
 
 #環境変数から DATABASE_URL を取得(Herokuでは自動設定される)
 DATABASE_URL = os.getenv("postgres://u9ksot7i4tclrr:p325c32f4abfd8f0f9da40ccaba8d89d36f548b07d6c6021421d78b1c30b3dd07@ce0lkuo944ch99.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/dfa72fs3dgt167")
@@ -17,13 +19,22 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 #DBインスタンス作成
 db = SQLAlchemy(app)
 
+#ログイン管理
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 # --- モデル定義 ---
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
     pw = db.Column(db.Integer, nullable=False)
     point = db.Column(db.Integer)
     #login_date = ...
+
+#ユーザー読み込み関数
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # --- 初期化用ルート (最初だけ使う) ---
 @app.route("/initdb")
@@ -49,15 +60,24 @@ def add_user():
 
 # --- ランキング表示 ---
 @app.route('/ranking')
+@login_required
 def ranking():
     users = User.query.all()
     return render_template("ranking.html",users=users)
 
 # --- 以下、自前ルート ---
-@app.route("/")
-def hello():
-    return "Hello World!"
+@app.route("/", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        user = User.query.filter_by(name=request.form["name"]).first()
+        if user and user.pw == request.form["pw"]:
+            login_user(user)
+            return redirect(url_for("ranking"))
+        return "ログイン失敗"
+    return render_template("login.html")
 
-@app.route("/index")
-def index():
-    return render_template("index.html")
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("login"))
