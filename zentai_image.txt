@@ -1,6 +1,17 @@
 [/](login page)"ログインしていない場合はここへ"
 >>(ログイン成功)
-    [/ranking.html](top page)
+    [/ranking](top page)
+    >>(ログインしたアカウントの名前を押す)
+        [/profile/id](プロフィール画面)
+        >>(チケット発行ボタン)
+            [/ticket_create/id](チケット発行画面)
+
+[/ticket_all](チケット一覧画面)
+>>(チケット選択)
+    [/ticket_receive](チケット受付画面)
+    >>引出、預入 処理
+
+
 
 
 
@@ -9,9 +20,11 @@
 
 
 <やりたいこと>
-delete機能
-user画面
-ticket DB
+DBのcsv import,export
+
+引出額がマイナスになる際、警告などを出すようにする
+各画面のアクセス制御
+ランキングのポイント降順表示
 
 
 memo:

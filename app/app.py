@@ -31,6 +31,12 @@ class User(UserMixin, db.Model):
     point = db.Column(db.Integer)
     #login_date = ...
 
+class Ticket(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.String(20), nullable=False)
+    point = db.Column(db.Integer, nullable=False)
+
 #ユーザー読み込み関数
 @login_manager.user_loader
 def load_user(user_id):
@@ -58,7 +64,14 @@ def add_user():
         return redirect(url_for("ranking"))
     return render_template("add_user.html")
 
-# --- 削除機能 ---
+# --- ランキング表示 ---
+@app.route('/ranking')
+@login_required
+def ranking():
+    users = User.query.all()
+    return render_template("ranking.html",users=users)
+
+# --- ユーザ削除 ---
 @app.route('/delete_user/<int:id>', methods=['POST'])
 def delete_user(id):
     user = User.query.get_or_404(id)
@@ -66,13 +79,56 @@ def delete_user(id):
     db.session.commit()
     return redirect(url_for('ranking'))
 
+# --- ticket追加 ---
+@app.route("/ticket_create/<int:id>",methods=["GET","POST"])
+def ticket_create(id):
+    if request.method == "POST":
+        type = request.form["type"]
+        point = request.form["point"]
+        ticket = Ticket(user_id=id,type=type,point=point)
+        db.session.add(ticket)
+        db.session.commit()
+        return redirect(url_for("ranking"))
+    else:
+        user=User.query.get(id)
+        return render_template("ticket_create.html",user=user)
 
-# --- ランキング表示 ---
-@app.route('/ranking')
-@login_required
-def ranking():
-    users = User.query.all()
-    return render_template("ranking.html",users=users)
+# --- ticket一覧 ---
+@app.route("/ticket_all")
+def ticket_all():
+    tickets = Ticket.query.all()
+    #ticket.user_id の user.name をhtmlで表示するために、User の name だけをdictionary型で作成
+    user_dict = {user.id: user.name for user in User.query.all()}
+    return render_template("ticket_all.html",tickets=tickets,user_dict=user_dict)
+
+# --- ticket受付 ---
+@app.route("/ticket_receive/<int:id>",methods=["GET","POST"])
+def ticket_receive(id):
+    ticket = Ticket.query.get(id)
+    user = User.query.get(ticket.user_id)
+    if request.method == "POST":
+        if ticket.type == "withdrawal":#引出
+            user.point = user.point - ticket.point
+        elif ticket.type == "deposit":#預入
+            user.point = user.point + ticket.point
+        else:
+            return "ticket.type エラー"
+        db.session.commit()
+        delete_ticket(ticket.id)#ticket削除処理
+        return redirect(url_for("ticket_all"))
+    else:
+        name = user.name
+        return render_template("ticket_receive.html",ticket=ticket,user=user,name=name)
+
+# --- ticket削除 ---
+@app.route('/delete_ticket/<int:id>', methods=['POST'])
+def delete_ticket(id):
+    ticket = Ticket.query.get_or_404(id)
+    db.session.delete(ticket)
+    db.session.commit()
+    return redirect(url_for("ticket_all"))
+
+
 
 # --- user画面 ---
 @app.route("/profile/<int:id>")

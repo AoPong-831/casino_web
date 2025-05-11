@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}チケット受付ページ{% endblock %}
+
+{% block content %}
+<p>チケット受付ページ</p>
+
+名前：{{ name }}
+<br>
+{% if ticket.type=="withdrawal" %}
+    <p>type:引出</p>
+    <p>
+    [ポイント変動]<br>
+    {{user.point}}<br>
+    ↓<br>
+    {{ user.point - ticket.point }}
+    </p>
+
+{% elif ticket.type=="deposit" %}
+    <p>type:預入</p>
+    <p>
+    [ポイント変動]<br>
+    {{user.point}}<br>
+    ↓<br>
+    {{ user.point + ticket.point }}
+    </p>
+{% endif %}
+
+<form action="{{ url_for('ticket_receive', id=ticket.id) }}" method="POST" style="display:inline;">
+    <button type="submit">許可</button>
+</form>
+
+<form action="{{ url_for('delete_ticket', id=ticket.id) }}" method="POST" style="display:inline;">
+    <button type="submit">チケット削除</button>
+</form>
+
+
+{% endblock %}

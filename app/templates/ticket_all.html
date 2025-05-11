@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}チケット一覧ページ{% endblock %}
+
+{% block content %}
+
+<h1><チケット一覧></h1>
+{% if t == [] %}
+    <p>チケットはありません</p>
+{% else %}
+    <table border = "1">
+        <tr>
+            <th>id</th>
+            <th>名前</th>
+            <th>タイプ</th>
+            <th>ポイント</th>
+            <th>削除</th>
+        </tr>
+        {% for ticket in tickets %}
+            <tr>
+                <th>{{ ticket.id }}</th>
+                <th>{{ user_dict[ticket.user_id] }}</th>
+                <th><a href="/ticket_receive/{{ ticket.id }}">{{ ticket.type }}</a></th>
+                <th>{{ ticket.point }}</th>
+                <th>
+                    <form action="{{ url_for('delete_ticket', id=ticket.id) }}" method="POST" style="display:inline;">
+                        <button type="submit">チケット削除</button>
+                    </form>
+                </th>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+<a href="/ranking">ランキング</a>
+{% endblock %}

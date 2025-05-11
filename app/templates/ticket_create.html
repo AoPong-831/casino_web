@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}チケット作成ページ{% endblock %}
+
+{% block content %}
+<p>チケット作成ページ</p>
+
+<form method="POST">
+    <label>
+        <input type="radio" id="withdrawal" name="type" value="withdrawal" checked>
+        引出
+    </label>
+    <label>
+        <input type="radio" id="deposit"  name="type" value="deposit">
+        預入
+    </label>
+    <br>
+    <label for="point">ポイント：</label>
+        <input type="number" id="point" name="point" min="0" required>
+    <br>
+    <label>
+        <button type="submit">登録</button>
+    </label>
+  </form>
+  
+
+{% endblock %}

@@ -3,7 +3,7 @@
 
 {% block content %}
 <h1>ランキング</h1>
-{% if data == [] %}
+{% if users == [] %}
     <p>ランキングはありません</p>
 {% else %}
     <table border = "1">
@@ -26,5 +26,7 @@
             </tr>
         {% endfor %}
     </table>
+
+<a href="/ticket_all">[デバック用]チケット一覧</a>
 {% endif %}
 {% endblock %}
