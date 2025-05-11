@@ -48,15 +48,24 @@ def add_user():
     if request.method == "POST":
         #htmlの入力欄からとってくる値
         name = request.form["name"]
-        pw = request.form["birth"]
+        pw = request.form["pw"]
         
         #DBに書き込む
         user = User(name=name,pw=pw,point=0)
         db.session.add(user)
         db.session.commit()
 
-        return redirect(url_for("usres"))
+        return redirect(url_for("ranking"))
     return render_template("add_user.html")
+
+# --- 削除機能 ---
+@app.route('/delete_user/<int:id>', methods=['POST'])
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for('ranking'))
+
 
 # --- ランキング表示 ---
 @app.route('/ranking')
@@ -65,7 +74,18 @@ def ranking():
     users = User.query.all()
     return render_template("ranking.html",users=users)
 
-# --- 以下、自前ルート ---
+# --- user画面 ---
+@app.route("/profile/<int:id>")
+@login_required
+def profile(id):
+    #自分の画面以外見れない
+    if current_user.id != id:
+        return "アカウントが違うよ！"
+    else:
+        pass
+    return render_template("profile.html",user=User.query.get(id))
+
+# --- 初期ルート ---
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -76,6 +96,7 @@ def login():
         return "ログイン失敗"
     return render_template("login.html")
 
+# --- ログアウト ---
 @app.route("/logout")
 @login_required
 def logout():

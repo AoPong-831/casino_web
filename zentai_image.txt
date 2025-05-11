@@ -1,0 +1,19 @@
+[/](login page)"ログインしていない場合はここへ"
+>>(ログイン成功)
+    [/ranking.html](top page)
+
+
+
+[/add_user]
+[/logout]
+
+
+<やりたいこと>
+delete機能
+user画面
+ticket DB
+
+
+memo:
+test, test
+user,1234

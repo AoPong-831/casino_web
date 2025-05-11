@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}TOPページ{% endblock %}
+{% block title %}ランキングページ{% endblock %}
 
 {% block content %}
 <h1>ランキング</h1>
@@ -11,12 +11,18 @@
             <th>順位</th>
             <th>名前</th>
             <th>ポイント</th>
+            <th>test</th>
         </tr>
         {% for user in users %}
             <tr>
                 <th>{{ user.id }}</th>
-                <th><a href="/{{ user.name }}/data">{{ user.name }}</a></th>
+                <th><a href="/profile/{{ user.id }}">{{ user.name }}</a></th>
                 <th>{{ user.point }}</th>
+                <th>
+                    <form action="{{ url_for('delete_user', id=user.id) }}" method="POST" style="display:inline;">
+                        <button type="submit">削除</button>
+                    </form>
+                </th>
             </tr>
         {% endfor %}
     </table>
