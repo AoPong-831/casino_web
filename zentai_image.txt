@@ -5,6 +5,8 @@
         [/profile/id](プロフィール画面)
         >>(チケット発行ボタン)
             [/ticket_create/id](チケット発行画面)
+        >>(チップ交換ボタン)
+            [/exchange/id]
 
 [/ticket_all](チケット一覧画面)
 >>(チケット選択)
@@ -18,15 +20,14 @@
 [/add_user]
 [/logout]
 
+[/import_users]
+[/export_users]
+
 
 <やりたいこと>
-DBのcsv import,export
+最終来店日の追加
+ランキング表示の最終来店日3カ月以上前を除外
+最終来店日どこでいじるか。
 
 引出額がマイナスになる際、警告などを出すようにする
 各画面のアクセス制御
-ランキングのポイント降順表示
-
-
-memo:
-test, test
-user,user

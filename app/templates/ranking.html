@@ -6,6 +6,8 @@
 {% if users == [] %}
     <p>ランキングはありません</p>
 {% else %}
+
+<h3><a href="/profile/{{ current_user_id }}">マイページ</a></h3>
     <table border = "1">
         <tr>
             <th>順位</th>
@@ -16,7 +18,8 @@
         </tr>
         {% for user in users %}
             <tr>
-                <th>{{ user.id }}</th>
+                <!-- loop.index はJinja2 が提供する組み込みの変数で、for ループ内での現在の繰り返し回数を1から始まるインデックスとして取得できる -->
+                <th>{{ loop.index }}</th>
                 <th><a href="/profile/{{ user.id }}">{{ user.name }}</a></th>
                 <th>{{ user.chip }}</th>
                 <th>{{ user.point }}</th>

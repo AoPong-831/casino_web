@@ -2,6 +2,7 @@ from flask import Flask,render_template,request,redirect,url_for # type: ignore
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
+from flask import Response#csv用
 import csv#csv用
 from io import TextIOWrapper#csv用
 
@@ -72,8 +73,8 @@ def add_user():
 @app.route('/ranking')
 @login_required
 def ranking():
-    users = User.query.all()
-    return render_template("ranking.html",users=users)
+    users = User.query.order_by(User.chip.desc()).all()#usersをchipで降順(desc){昇順はasc}
+    return render_template("ranking.html",users=users,current_user_id=current_user.id)
 
 # --- ユーザ削除 ---
 @app.route('/delete_user/<int:id>', methods=['POST'])
@@ -216,3 +217,19 @@ def import_users():
         return redirect(url_for('ranking'))  # 任意の表示先へ
 
     return render_template('import_users.html')
+
+# --- CSV_エクスポート ---
+@app.route('/export_users')
+def export_users():
+    users = User.query.all()
+
+    def generate():#この関数で逐次的にcsv文字列を生成
+        yield 'name,pw,chip,point\n'  # CSVヘッダー
+        for user in users:
+            yield f'{user.name},{user.pw},{user.chip},{user.point}\n'
+
+    return Response(
+        generate(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': 'attachment; filename=users.csv'}
+    )
