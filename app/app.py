@@ -74,7 +74,7 @@ def add_user():
 @login_required
 def ranking():
     users = User.query.order_by(User.chip.desc()).all()#usersをchipで降順(desc){昇順はasc}
-    return render_template("ranking.html",users=users,current_user_id=current_user.id)
+    return render_template("ranking.html",users=users,current_user=current_user)
 
 # --- ユーザ削除 ---
 @app.route('/delete_user/<int:id>', methods=['POST'])

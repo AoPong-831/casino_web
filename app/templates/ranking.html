@@ -7,7 +7,8 @@
     <p>ランキングはありません</p>
 {% else %}
 
-<h3><a href="/profile/{{ current_user_id }}">マイページ</a></h3>
+    <h3><a href="/profile/{{ current_user.id }}">マイページ</a></h3>
+    <p>名前：{{current_user.name}} | チップ：{{current_user.chip}} | ポイント：{{current_user.point}}</p>
     <table border = "1">
         <tr>
             <th>順位</th>
