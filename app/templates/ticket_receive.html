@@ -6,23 +6,41 @@
 
 名前：{{ name }}
 <br>
-{% if ticket.type=="withdrawal" %}
+{% if ticket.type == "withdrawal" %}
     <p>type:引出</p>
-    <p>
-    [ポイント変動]<br>
-    {{user.point}}<br>
-    ↓<br>
-    {{ user.point - ticket.point }}
-    </p>
 
-{% elif ticket.type=="deposit" %}
-    <p>type:預入</p>
-    <p>
-    [ポイント変動]<br>
-    {{user.point}}<br>
-    ↓<br>
-    {{ user.point + ticket.point }}
-    </p>
+    {% if ticket.category == "chip" %}
+        <p>
+        [チップ変動]<br>
+        {{user.chip}}<br>
+        ↓<br>
+        {{ user.chip - ticket.value }}
+        </p>
+    {% elif ticket.category == "point" %}
+        <p>
+        [ポイント変動]<br>
+        {{user.point}}<br>
+        ↓<br>
+        {{ user.point - ticket.value }}
+        </p>
+    {% endif %}
+
+{% elif ticket.type == "deposit" %}
+    {% if ticket.category == "chip" %}
+        <p>
+        [チップ変動]<br>
+        {{user.chip}}<br>
+        ↓<br>
+        {{ user.chip + ticket.value }}
+        </p>
+    {% elif ticket.category == "point" %}
+        <p>
+        [ポイント変動]<br>
+        {{user.point}}<br>
+        ↓<br>
+        {{ user.point + ticket.value }}
+        </p>
+    {% endif %}
 {% endif %}
 
 <form action="{{ url_for('ticket_receive', id=ticket.id) }}" method="POST" style="display:inline;">

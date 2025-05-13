@@ -28,6 +28,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
     pw = db.Column(db.Integer, nullable=False)
+    chip = db.Column(db.Integer)
     point = db.Column(db.Integer)
     #login_date = ...
 
@@ -35,7 +36,8 @@ class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(20), nullable=False)
-    point = db.Column(db.Integer, nullable=False)
+    category = db.Column(db.String(20), nullable=False)
+    value = db.Column(db.Integer, nullable=False)
 
 #ユーザー読み込み関数
 @login_manager.user_loader
@@ -57,7 +59,7 @@ def add_user():
         pw = request.form["pw"]
         
         #DBに書き込む
-        user = User(name=name,pw=pw,point=0)
+        user = User(name=name,pw=pw,chip=0,point=0)
         db.session.add(user)
         db.session.commit()
 
@@ -84,8 +86,9 @@ def delete_user(id):
 def ticket_create(id):
     if request.method == "POST":
         type = request.form["type"]
-        point = request.form["point"]
-        ticket = Ticket(user_id=id,type=type,point=point)
+        category = request.form["category"]
+        value = request.form["value"]
+        ticket = Ticket(user_id=id,type=type,category=category,value=value)
         db.session.add(ticket)
         db.session.commit()
         return redirect(url_for("ranking"))
@@ -106,13 +109,20 @@ def ticket_all():
 def ticket_receive(id):
     ticket = Ticket.query.get(id)
     user = User.query.get(ticket.user_id)
+
     if request.method == "POST":
         if ticket.type == "withdrawal":#引出
-            user.point = user.point - ticket.point
+            if ticket.category == "chip":
+                user.chip = user.chip - ticket.value
+            elif ticket.category == "point":
+                user.point = user.point - ticket.value
         elif ticket.type == "deposit":#預入
-            user.point = user.point + ticket.point
+            if ticket.category == "chip":
+                user.chip = user.chip + ticket.value
+            elif ticket.category == "point":
+                user.point = user.point + ticket.value
         else:
-            return "ticket.type エラー"
+            return "ticket.type or category エラー"
         db.session.commit()
         delete_ticket(ticket.id)#ticket削除処理
         return redirect(url_for("ticket_all"))
@@ -128,8 +138,6 @@ def delete_ticket(id):
     db.session.commit()
     return redirect(url_for("ticket_all"))
 
-
-
 # --- user画面 ---
 @app.route("/profile/<int:id>")
 @login_required
@@ -140,6 +148,28 @@ def profile(id):
     else:
         pass
     return render_template("profile.html",user=User.query.get(id))
+
+# --- チップ交換 ---
+@app.route("/exchange/<int:id>", methods=["GET",'POST'])
+@login_required
+def exchange(id):
+    user = User.query.get(id)
+    message = ""
+
+    if request.method == "POST":
+        input_point = int(request.form["point"])#入力された交換するポイント量
+        if user.point >= input_point:
+            user.point = user.point - input_point#ポイント引き
+            user.chip = user.chip + (input_point//10)#チップ追加
+            user.point = user.point + (input_point%10)#チップ交換のおつり
+
+            db.session.commit()
+            return redirect(url_for("ranking"))
+        else:
+           message="[ERROR]ポイント不足"
+    return render_template("exchange.html.",user=user,message=message)
+
+
 
 # --- 初期ルート ---
 @app.route("/", methods=["GET", "POST"])

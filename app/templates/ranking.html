@@ -10,6 +10,7 @@
         <tr>
             <th>順位</th>
             <th>名前</th>
+            <th>チップ</th>
             <th>ポイント</th>
             <th>test</th>
         </tr>
@@ -17,6 +18,7 @@
             <tr>
                 <th>{{ user.id }}</th>
                 <th><a href="/profile/{{ user.id }}">{{ user.name }}</a></th>
+                <th>{{ user.chip }}</th>
                 <th>{{ user.point }}</th>
                 <th>
                     <form action="{{ url_for('delete_user', id=user.id) }}" method="POST" style="display:inline;">

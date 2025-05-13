@@ -12,7 +12,8 @@
             <th>id</th>
             <th>名前</th>
             <th>タイプ</th>
-            <th>ポイント</th>
+            <th>カテゴリ</th>
+            <th>値</th>
             <th>削除</th>
         </tr>
         {% for ticket in tickets %}
@@ -20,7 +21,8 @@
                 <th>{{ ticket.id }}</th>
                 <th>{{ user_dict[ticket.user_id] }}</th>
                 <th><a href="/ticket_receive/{{ ticket.id }}">{{ ticket.type }}</a></th>
-                <th>{{ ticket.point }}</th>
+                <th>{{ ticket.category }}</th>
+                <th>{{ ticket.value }}</th>
                 <th>
                     <form action="{{ url_for('delete_ticket', id=ticket.id) }}" method="POST" style="display:inline;">
                         <button type="submit">チケット削除</button>

@@ -29,4 +29,4 @@ DBのcsv import,export
 
 memo:
 test, test
-user,1234
+user,user
