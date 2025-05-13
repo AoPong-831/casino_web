@@ -2,6 +2,8 @@ from flask import Flask,render_template,request,redirect,url_for # type: ignore
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
+import csv#csv用
+from io import TextIOWrapper#csv用
 
 app = Flask(__name__)
 app.secret_key = "your-secret-key" #これないとエラー出るらしい
@@ -188,3 +190,29 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("login"))
+
+# --- CSV_インポート ---
+@app.route("/import_users", methods=["GET","POST"])
+def import_users():
+    if request.method == 'POST':
+        file = request.files['file']
+        if not file or not file.filename.endswith('.csv'):
+            return "CSVファイルを選んでください"
+
+        # CSV読み込み
+        stream = TextIOWrapper(file.stream, encoding='utf-8')
+        reader = csv.DictReader(stream)
+
+        for row in reader:#行毎に行う
+            name = row.get('name')
+            pw = row.get('pw')
+            chip = row.get('chip')
+            point = row.get('point')
+            if name and pw and chip and point:#空白がなければ
+                user = User(name=name, pw=pw, chip=chip, point=point)
+                db.session.add(user)
+
+        db.session.commit()
+        return redirect(url_for('ranking'))  # 任意の表示先へ
+
+    return render_template('import_users.html')
