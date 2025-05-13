@@ -170,7 +170,7 @@ def exchange(id):
             return redirect(url_for("ranking"))
         else:
            message="[ERROR]ポイント不足"
-    return render_template("exchange.html.",user=user,message=message)
+    return render_template("exchange.html",user=user,message=message)
 
 
 
