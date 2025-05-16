@@ -5,6 +5,8 @@ import os
 from flask import Response#csv用
 import csv#csv用
 from io import TextIOWrapper#csv用
+from datetime import datetime#ログイン機能用
+from flask import session#ログイン機能用
 
 app = Flask(__name__)
 app.secret_key = "your-secret-key" #これないとエラー出るらしい
@@ -33,6 +35,7 @@ class User(UserMixin, db.Model):
     pw = db.Column(db.String(20), nullable=False)
     chip = db.Column(db.Integer)
     point = db.Column(db.Integer)
+    last_login = db.Column(db.Date)#年月日だけでいいのでData型。時間まで欲しい場合はDatetime
     #login_date = ...
 
 class Ticket(db.Model):
@@ -66,7 +69,7 @@ def add_user():
         db.session.add(user)
         db.session.commit()
 
-        return redirect(url_for("ranking"))
+        return redirect(url_for("login"))
     return render_template("add_user.html")
 
 # --- ランキング表示 ---
@@ -184,15 +187,21 @@ def exchange(id):
 
 
 
-# --- 初期ルート ---
+# --- ログイン(初期ルート) ---
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        user = User.query.filter_by(name=request.form["name"]).first()
-        if user and user.pw == request.form["pw"]:
-            login_user(user)
+        name = request.form["name"]
+        pw = request.form["pw"]
+        user = User.query.filter_by(name=name, pw=pw).first()#初めにヒットするデータを取得
+        if user:
+            user.last_login = datetime.now().date()#ログイン最終日付更新(時間もいる場合は.date()を消す)
+            db.session.commit()
+
+            login_user(user)#ログイン状態に
             return redirect(url_for("ranking"))
-        return "ログイン失敗"
+        else:
+            return "ログイン失敗"
     return render_template("login.html")
 
 # --- ログアウト ---
