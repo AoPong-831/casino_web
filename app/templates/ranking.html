@@ -3,36 +3,39 @@
 
 {% block content %}
 <h1>ランキング</h1>
-{% if users == [] %}
-    <p>ランキングはありません</p>
-{% else %}
 
-    <h3><a href="/profile/{{ current_user.id }}">マイページ</a></h3>
-    <p>名前：{{current_user.name}} | チップ：{{current_user.chip}} | ポイント：{{current_user.point}}</p>
-    <table border = "1">
+<h3><a href="/profile/{{ current_user.id }}">マイページ</a></h3>
+{% if current_user.name == "JackPot" %}
+    <a href="/ticket_all">[デバック用]チケット一覧</a>
+{% endif %}
+
+<p>名前：{{current_user.name}} | チップ：{{current_user.chip}} | ポイント：{{current_user.point}}</p>
+<table border = "1">
+    <tr>
+        <th>順位</th>
+        <th>名前</th>
+        <th>チップ</th>
+        <th>ポイント</th>
+        {% if current_user.name == "JackPot" %}
+            <th>削除</th>
+        {% endif %}
+    </tr>
+    {% for user in users %}
         <tr>
-            <th>順位</th>
-            <th>名前</th>
-            <th>チップ</th>
-            <th>ポイント</th>
-            <th>test</th>
-        </tr>
-        {% for user in users %}
-            <tr>
-                <!-- loop.index はJinja2 が提供する組み込みの変数で、for ループ内での現在の繰り返し回数を1から始まるインデックスとして取得できる -->
-                <th>{{ loop.index }}</th>
-                <th><a href="/profile/{{ user.id }}">{{ user.name }}</a></th>
-                <th>{{ user.chip }}</th>
-                <th>{{ user.point }}</th>
+            <!-- loop.index はJinja2 が提供する組み込みの変数で、for ループ内での現在の繰り返し回数を1から始まるインデックスとして取得できる -->
+            <th>{{ loop.index }}</th>
+            <th><a href="/profile/{{ user.id }}">{{ user.name }}</a></th>
+            <th>{{ user.chip }}</th>
+            <th>{{ user.point }}</th>
+            {% if current_user.name == "JackPot" %}
                 <th>
-                    <form action="{{ url_for('delete_user', id=user.id) }}" method="POST" style="display:inline;">
+                    <form action="{{ url_for('delete_user', id=user.id) }}" method="GET" style="display:inline;">
                         <button type="submit">削除</button>
                     </form>
                 </th>
-            </tr>
-        {% endfor %}
-    </table>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
 
-<a href="/ticket_all">[デバック用]チケット一覧</a>
-{% endif %}
 {% endblock %}

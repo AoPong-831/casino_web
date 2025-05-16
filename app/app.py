@@ -29,8 +29,8 @@ login_manager.init_app(app)
 # --- モデル定義 ---
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), nullable=False)
-    pw = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(20),nullable=False, unique = True)
+    pw = db.Column(db.String(20), nullable=False)
     chip = db.Column(db.Integer)
     point = db.Column(db.Integer)
     #login_date = ...
@@ -77,15 +77,19 @@ def ranking():
     return render_template("ranking.html",users=users,current_user=current_user)
 
 # --- ユーザ削除 ---
-@app.route('/delete_user/<int:id>', methods=['POST'])
+@app.route('/delete_user/<int:id>', methods=["GET",'POST'])
+@login_required
 def delete_user(id):
-    user = User.query.get_or_404(id)
-    db.session.delete(user)
-    db.session.commit()
-    return redirect(url_for('ranking'))
+    if request.method == "POST":
+        user = User.query.get_or_404(id)
+        db.session.delete(user)
+        db.session.commit()
+        return redirect(url_for('ranking'))
+    return render_template("delete_user.html",user=User.query.get(id))
 
 # --- ticket追加 ---
 @app.route("/ticket_create/<int:id>",methods=["GET","POST"])
+@login_required
 def ticket_create(id):
     if request.method == "POST":
         type = request.form["type"]
@@ -101,7 +105,11 @@ def ticket_create(id):
 
 # --- ticket一覧 ---
 @app.route("/ticket_all")
+@login_required
 def ticket_all():
+    if current_user != "JackPot":
+        return "403 Forbidden<br> アクセスが拒否されました。<br> [原因]<br> アカウントにアクセス権限がありません。"
+
     tickets = Ticket.query.all()
     #ticket.user_id の user.name をhtmlで表示するために、User の name だけをdictionary型で作成
     user_dict = {user.id: user.name for user in User.query.all()}
@@ -109,6 +117,7 @@ def ticket_all():
 
 # --- ticket受付 ---
 @app.route("/ticket_receive/<int:id>",methods=["GET","POST"])
+@login_required
 def ticket_receive(id):
     ticket = Ticket.query.get(id)
     user = User.query.get(ticket.user_id)
@@ -135,6 +144,7 @@ def ticket_receive(id):
 
 # --- ticket削除 ---
 @app.route('/delete_ticket/<int:id>', methods=['POST'])
+@login_required
 def delete_ticket(id):
     ticket = Ticket.query.get_or_404(id)
     db.session.delete(ticket)
