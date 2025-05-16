@@ -5,7 +5,7 @@
 <h1>ランキング</h1>
 
 <h3><a href="/profile/{{ current_user.id }}">マイページ</a></h3>
-{% if current_user.name == "JackPot" %}
+{% if current_user.id == 1 %}
     <a href="/ticket_all">[デバック用]チケット一覧</a>
 {% endif %}
 
@@ -16,7 +16,9 @@
         <th>名前</th>
         <th>チップ</th>
         <th>ポイント</th>
-        {% if current_user.name == "JackPot" %}
+        {% if current_user.id == 1 %}
+            <th>最終ログイン日</th>
+            <th>ID</th>
             <th>削除</th>
         {% endif %}
     </tr>
@@ -27,14 +29,15 @@
             <th><a href="/profile/{{ user.id }}">{{ user.name }}</a></th>
             <th>{{ user.chip }}</th>
             <th>{{ user.point }}</th>
-            {% if current_user.name == "JackPot" %}
+            {% if current_user.id == 1 %}
+                <th>{{ user.last_login }}</th>
+                <th>{{ user.id }}</th>
                 <th>
                     <form action="{{ url_for('delete_user', id=user.id) }}" method="GET" style="display:inline;">
                         <button type="submit">削除</button>
                     </form>
                 </th>
             {% endif %}
-            <th>{{ user.last_login }}</th>
         </tr>
     {% endfor %}
 </table>

@@ -42,8 +42,9 @@ class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(20), nullable=False)
-    category = db.Column(db.String(20), nullable=False)
+    category = db.Column(db.String(20), nullable=False)#ーザ登録チケット発行時はname置き場に代用
     value = db.Column(db.Integer, nullable=False)
+    user_pw = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のpw置き場
 
 #ユーザー読み込み関数
 @login_manager.user_loader
@@ -60,16 +61,14 @@ def init_db():
 @app.route('/add_user', methods=["GET","POST"])
 def add_user():
     if request.method == "POST":
-        #htmlの入力欄からとってくる値
-        name = request.form["name"]
-        pw = request.form["pw"]
-        
-        #DBに書き込む
-        user = User(name=name,pw=pw,chip=0,point=0)
-        db.session.add(user)
+        #チケット発行
+        type = "add_user"
+        category = request.form["name"]#categoryをname入れに代用
+        user_pw = request.form["pw"]
+        ticket = Ticket(user_id=1,type=type,category=category,value=0,user_pw=user_pw)
+        db.session.add(ticket)
         db.session.commit()
-
-        return redirect(url_for("login"))
+        return render_template("stanby_add_user.html")
     return render_template("add_user.html")
 
 # --- ランキング表示 ---
@@ -110,7 +109,7 @@ def ticket_create(id):
 @app.route("/ticket_all")
 @login_required
 def ticket_all():
-    if current_user != "JackPot":
+    if current_user.id != 1:#rootユーザでないときアクセス拒否
         return "403 Forbidden<br> アクセスが拒否されました。<br> [原因]<br> アカウントにアクセス権限がありません。"
 
     tickets = Ticket.query.all()
@@ -136,6 +135,13 @@ def ticket_receive(id):
                 user.chip = user.chip + ticket.value
             elif ticket.category == "point":
                 user.point = user.point + ticket.value
+        elif ticket.type == "add_user":#アカウント作成
+            name = ticket.category
+            pw = ticket.user_pw
+            #DBに書き込む
+            user = User(name=name,pw=pw,chip=500,point=0,last_login=datetime.now().date())
+            db.session.add(user)
+            db.session.commit()
         else:
             return "ticket.type or category エラー"
         db.session.commit()

@@ -20,7 +20,16 @@
             <tr>
                 <th>{{ ticket.id }}</th>
                 <th>{{ user_dict[ticket.user_id] }}</th>
-                <th><a href="/ticket_receive/{{ ticket.id }}">{{ ticket.type }}</a></th>
+                
+                <th><a href="/ticket_receive/{{ ticket.id }}">
+                    {% if ticket.type == "withdrawal" %}
+                        引出
+                    {% elif ticket.type == "deposit" %}
+                        預入
+                    {% elif ticket.type == "add_user" %}
+                        ユーザ登録
+                    {% endif %}
+                </a></th>
                 <th>{{ ticket.category }}</th>
                 <th>{{ ticket.value }}</th>
                 <th>
