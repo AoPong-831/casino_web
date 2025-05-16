@@ -14,7 +14,7 @@
     <input type="number" id="point" name="point" min="0" required>
     <br>
     <button type="submit">交換</button>
-    <button onclick="history.back()">戻る</button>
+    <button onclick="window.location.href='/profile/{{ user.id }}'">戻る</button>
 </form>
 {% if message %}
     <p style="color: red;">{{ message }}</p>

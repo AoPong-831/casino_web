@@ -97,7 +97,20 @@ def ticket_create(id):
     if request.method == "POST":
         type = request.form["type"]
         category = request.form["category"]
-        value = request.form["value"]
+        value = int(request.form["value"])
+
+        #マイナス引出チェック
+        user = User.query.get(id)
+        if type == "withdrawal":
+            if category == "chip":
+                if user.chip < value:
+                    message="[ERROR]chip不足"
+                    return render_template("ticket_create.html",user=user, message=message)
+            elif category == "point":
+                if user.point < value:
+                    message="[ERROR]ポイント不足。そもそも、チップ交換を押しなさい"
+                    return render_template("ticket_create.html",user=user, message=message)
+            
         ticket = Ticket(user_id=id,type=type,category=category,value=value)
         db.session.add(ticket)
         db.session.commit()

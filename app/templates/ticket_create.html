@@ -4,6 +4,10 @@
 {% block content %}
 <p>チケット作成ページ</p>
 
+名前：{{user.name}}<br>
+チップ：{{user.chip}}<br>
+ポイント：{{user.point}}<br>
+<br>
 <form method="POST">
     <label>
         <input type="radio" id="withdrawal" name="type" value="withdrawal" checked>
@@ -28,9 +32,12 @@
     <br>
     <label>
         <button type="submit">発行</button>
-        <button onclick="history.back()">戻る</button>
+        <button onclick="window.location.href='/profile/{{ user.id }}'">戻る</button>
     </label>
   </form>
+{% if message %}
+    <p style="color: red;">{{ message }}</p>
+{% endif %}
   
 
 {% endblock %}

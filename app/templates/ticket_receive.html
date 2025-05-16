@@ -65,6 +65,7 @@
 <form action="{{ url_for('delete_ticket', id=ticket.id) }}" method="POST" style="display:inline;">
     <button type="submit">チケット削除</button>
 </form>
+<button onclick="window.location.href='/ranking'">戻る</button>
 
 
 {% endblock %}
