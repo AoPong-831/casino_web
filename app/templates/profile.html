@@ -4,6 +4,14 @@
 {% block content %}
 <p>プロフィール</p>
 
+<!--- pw = test or rootユーザの時表示 -->
+{% if current_user.id == 1 or user.pw == "test"%}
+    <a href="/change_pw_user/{{ user.id }}">PW変更ページ</a>
+{% endif %} 
+
+<br>
+<br>
+
 名前：{{user.name}}<br>
 チップ：{{user.chip}}<br>
 ポイント：{{user.point}}<br>

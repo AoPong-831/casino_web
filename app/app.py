@@ -79,6 +79,24 @@ def ranking():
     users = User.query.order_by(User.chip.desc()).all()#usersをchipで降順(desc){昇順はasc}
     return render_template("ranking.html",users=users,current_user=current_user)
 
+# --- ユーザーPW変更 ---
+@app.route('/change_pw_user/<int:id>', methods=["GET","POST"])
+def change_pw_user(id):
+    #自分の画面以外見れない
+    if current_user.id == 1:
+        pass
+    elif current_user.id != id:
+        return "アカウントが違うよ！"
+    else:
+        pass
+
+    if request.method == "POST":
+        user = User.query.get(id)
+        user.pw = request.form["pw"]
+        db.session.commit()
+        return redirect(url_for("login"))
+    return render_template("change_pw_user.html", user=User.query.get(id))
+
 # --- ユーザ削除 ---
 @app.route('/delete_user/<int:id>', methods=["GET",'POST'])
 @login_required
@@ -94,6 +112,14 @@ def delete_user(id):
 @app.route("/ticket_create/<int:id>",methods=["GET","POST"])
 @login_required
 def ticket_create(id):
+    #自分の画面以外見れない
+    if current_user.id == 1:
+        pass
+    elif current_user.id != id:
+        return "アカウントが違うよ！"
+    else:
+        pass
+
     if request.method == "POST":
         type = request.form["type"]
         category = request.form["category"]
@@ -135,6 +161,9 @@ def ticket_all():
 @app.route("/ticket_receive/<int:id>",methods=["GET","POST"])
 @login_required
 def ticket_receive(id):
+    if current_user.id != 1:#rootユーザでないときアクセス拒否
+        return "403 Forbidden<br> アクセスが拒否されました。<br> [原因]<br> アカウントにアクセス権限がありません。"
+    
     ticket = Ticket.query.get(id)
     user = User.query.get(ticket.user_id)
 
@@ -182,7 +211,9 @@ def delete_ticket(id):
 @login_required
 def profile(id):
     #自分の画面以外見れない
-    if current_user.id != id:
+    if current_user.id == 1:
+        pass
+    elif current_user.id != id:
         return "アカウントが違うよ！"
     else:
         pass
@@ -192,6 +223,14 @@ def profile(id):
 @app.route("/exchange/<int:id>", methods=["GET",'POST'])
 @login_required
 def exchange(id):
+    #自分の画面以外見れない
+    if current_user.id == 1:
+        pass
+    elif current_user.id != id:
+        return "アカウントが違うよ！"
+    else:
+        pass
+
     user = User.query.get(id)
     message = ""
 
