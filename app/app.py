@@ -42,7 +42,8 @@ class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(20), nullable=False)
-    category = db.Column(db.String(20), nullable=False)#ーザ登録チケット発行時はname置き場に代用
+    category = db.Column(db.String(20), nullable=False)
+    #ーザ登録チケット発行時はname置き場に代用、月初めボーナスは"monthly_bonus"
     value = db.Column(db.Integer, nullable=False)
     user_pw = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のpw置き場
 
@@ -65,7 +66,7 @@ def add_user():
         type = "add_user"
         category = request.form["name"]#categoryをname入れに代用
         user_pw = request.form["pw"]
-        ticket = Ticket(user_id=1,type=type,category=category,value=0,user_pw=user_pw)
+        ticket = Ticket(user_id=1,type=type,category=category,value=500,user_pw=user_pw)
         db.session.add(ticket)
         db.session.commit()
         return render_template("stanby_add_user.html")
@@ -138,10 +139,13 @@ def ticket_receive(id):
         elif ticket.type == "add_user":#アカウント作成
             name = ticket.category
             pw = ticket.user_pw
+            chip = ticket.value#チケット発行時に500を指定
             #DBに書き込む
-            user = User(name=name,pw=pw,chip=500,point=0,last_login=datetime.now().date())
+            user = User(name=name,pw=pw,chip=chip,point=0,last_login=datetime.now().date())
             db.session.add(user)
             db.session.commit()
+        elif ticket.type == "monthly_bonus":#月初めボーナス
+            pass
         else:
             return "ticket.type or category エラー"
         db.session.commit()
@@ -201,7 +205,20 @@ def login():
         pw = request.form["pw"]
         user = User.query.filter_by(name=name, pw=pw).first()#初めにヒットするデータを取得
         if user:
-            user.last_login = datetime.now().date()#ログイン最終日付更新(時間もいる場合は.date()を消す)
+            #月初めボーナス(if 年月が同じなら、何もせず else ボーナス付与)
+            if user.last_login.year == datetime.now().year and user.last_login.month == datetime.now().month:
+                user.last_login = datetime.now().date()#ログイン最終日付更新(時間もいる場合は.date()を消す)
+            else:
+                if 1000 > (user.chip + (user.point//10)):#総資産100チップ未満
+                    value = 300#300ボーナス
+                else:
+                    value = 100#100ボーナス
+
+                ticket = Ticket(user_id=1,type="monthly_bonus",category=user.name,value=value)
+                db.session.add(ticket)
+                db.session.commit()
+
+                user.last_login = datetime.now().date()#ログイン最終日付更新(時間もいる場合は.date()を消す)
             db.session.commit()
 
             login_user(user)#ログイン状態に

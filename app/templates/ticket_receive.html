@@ -47,6 +47,14 @@
     <p>type:ユーザ追加</p>
     =================<br>
     名前：{{ ticket.category }}<br>
+    chip：{{ ticket.value }} <br>
+    =================<br>
+{% elif ticket.type == "monthly_bonus" %}
+    <p>type:月初めボーナス</p>
+    =================<br>
+    名前：{{ ticket.category }}<br>
+    chip：{{ ticket.value }} <br>
+    <strong>直接チップを渡してください！</strong><br>
     =================<br>
 {% endif %}
 

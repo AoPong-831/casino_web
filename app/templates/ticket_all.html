@@ -28,6 +28,8 @@
                         預入
                     {% elif ticket.type == "add_user" %}
                         ユーザ登録
+                    {% elif ticket.type == "monthly_bonus" %}
+                        月初めボーナス
                     {% endif %}
                 </a></th>
                 <th>{{ ticket.category }}</th>
