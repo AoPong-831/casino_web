@@ -228,8 +228,10 @@ def import_users():
             pw = row.get('pw')
             chip = row.get('chip')
             point = row.get('point')
-            if name and pw and chip and point:#空白がなければ
-                user = User(name=name, pw=pw, chip=chip, point=point)
+            #last_login = ... xxxx-xx-xxの文字列をdate型に変換。※不正な文字列の場合、エラーの原因になる。
+            last_login = datetime.strptime(row.get('last_login'),"%Y-%m-%d").date()
+            if name and pw and chip and point and last_login:#空白がなければ
+                user = User(name=name, pw=pw, chip=chip, point=point, last_login=last_login)
                 db.session.add(user)
 
         db.session.commit()
@@ -243,9 +245,9 @@ def export_users():
     users = User.query.all()
 
     def generate():#この関数で逐次的にcsv文字列を生成
-        yield 'name,pw,chip,point\n'  # CSVヘッダー
+        yield 'name,pw,chip,point,last_login\n'  # CSVヘッダー
         for user in users:
-            yield f'{user.name},{user.pw},{user.chip},{user.point}\n'
+            yield f'{user.name},{user.pw},{user.chip},{user.point},{user.last_login}\n'
 
     return Response(
         generate(),
