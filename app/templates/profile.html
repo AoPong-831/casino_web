@@ -7,17 +7,16 @@
 <!--- pw = test or rootユーザの時表示 -->
 {% if current_user.id == 1 or user.pw == "test"%}
     <a href="/change_pw_user/{{ user.id }}">PW変更ページ</a>
+    <br>
+    <br>
 {% endif %} 
-
-<br>
-<br>
 
 名前：{{user.name}}<br>
 チップ：{{user.chip}}<br>
 ポイント：{{user.point}}<br>
 <br>
 
-<button><a href="/ticket_create/{{ user.id }}">チケット発行</a></button>
-<button><a href="/exchange/{{ user.id }}">チップ交換</a></button>
+<button><a href="/ticket_create/{{ user.id }}">ATM処理</a></button>
+<button><a href="/exchange/{{ user.id }}">チップ購入</a></button>
 <button onclick="window.location.href='/ranking'">戻る</button>
 {% endblock %}

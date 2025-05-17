@@ -86,7 +86,7 @@ def change_pw_user(id):
     if current_user.id == 1:
         pass
     elif current_user.id != id:
-        return "アカウントが違うよ！"
+        return "<h1>アカウントが違うよ！<h1>"
     else:
         pass
 
@@ -116,7 +116,7 @@ def ticket_create(id):
     if current_user.id == 1:
         pass
     elif current_user.id != id:
-        return "アカウントが違うよ！"
+        return "<h1>アカウントが違うよ！<h1>"
     else:
         pass
 
@@ -214,7 +214,7 @@ def profile(id):
     if current_user.id == 1:
         pass
     elif current_user.id != id:
-        return "アカウントが違うよ！"
+        return "<h1><h1>アカウントが違うよ！<h1><h1>"
     else:
         pass
     return render_template("profile.html",user=User.query.get(id))
@@ -227,7 +227,7 @@ def exchange(id):
     if current_user.id == 1:
         pass
     elif current_user.id != id:
-        return "アカウントが違うよ！"
+        return "<h1>アカウントが違うよ！<h1>"
     else:
         pass
 
