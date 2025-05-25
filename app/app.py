@@ -52,12 +52,6 @@ class Ticket(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# --- 初期化用ルート (最初だけ使う) ---
-@app.route("/initdb")
-def init_db():
-    db.create_all() #テーブル作成
-    return "DB Initialized"
-
 # --- ユーザー追加(リンク直以外でアクセス禁止) ---
 @app.route('/add_user', methods=["GET","POST"])
 def add_user():
@@ -290,6 +284,11 @@ def logout():
 @app.route("/import_users", methods=["GET","POST"])
 def import_users():
     if request.method == 'POST':
+        #テーブルの初期化
+        db.drop_all()#テーブル削除
+        db.create_all() #テーブル作成
+
+        #CSV_インポート
         file = request.files['file']
         if not file or not file.filename.endswith('.csv'):
             return "CSVファイルを選んでください"

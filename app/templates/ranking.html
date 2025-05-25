@@ -6,7 +6,11 @@
 
 <h3><a href="/profile/{{ current_user.id }}">マイページ</a></h3>
 {% if current_user.id == 1 %}
-    <a href="/ticket_all">[デバック用]チケット一覧</a>
+    <a href="/ticket_all">チケット一覧</a> <br>
+    <p>
+        <a href="/import_users">インポートCSV</a>
+        <a href="/export_users">エクスポートCSV</a>
+    </p>
 {% endif %}
 
 <p>名前：{{current_user.name}} | チップ：{{current_user.chip}} | ポイント：{{current_user.point}}</p>
