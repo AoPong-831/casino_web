@@ -19,4 +19,43 @@
 <button><a href="/ticket_create/{{ user.id }}">ATM処理</a></button>
 <button><a href="/exchange/{{ user.id }}">チップ購入</a></button>
 <button onclick="window.location.href='/ranking'">戻る</button>
+
+<p>===[申請済みチケット一覧]===</p>
+
+{% if tickets == [] %}
+    <p>チケットはありません</p>
+{% else %}
+    <table border = "1">
+        <tr>
+            <th>id</th>
+            <th>タイプ</th>
+            <th>カテゴリ</th>
+            <th>値</th>
+            <th>削除</th>
+        </tr>
+        {% for ticket in tickets %}
+            <tr>
+                <th>{{ ticket.id }}</th>
+                <th>
+                    {% if ticket.type == "withdrawal" %}
+                        引出
+                    {% elif ticket.type == "deposit" %}
+                        預入
+                    {% elif ticket.type == "add_user" %}
+                        ユーザ登録
+                    {% elif ticket.type == "monthly_bonus" %}
+                        月初めボーナス
+                    {% endif %}
+                </th>
+                <th>{{ ticket.category }}</th>
+                <th>{{ ticket.value }}</th>
+                <th>
+                    <form action="{{ url_for('delete_ticket', id=ticket.id) }}" method="POST" style="display:inline;">
+                        <button type="submit">チケット削除</button>
+                    </form>
+                </th>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
 {% endblock %}

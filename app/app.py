@@ -134,7 +134,7 @@ def ticket_create(id):
         ticket = Ticket(user_id=id,type=type,category=category,value=value)
         db.session.add(ticket)
         db.session.commit()
-        return redirect(url_for("ranking"))
+        return redirect(url_for("profile", id=current_user.id))
     else:
         user=User.query.get(id)
         return render_template("ticket_create.html",user=user)
@@ -198,7 +198,10 @@ def delete_ticket(id):
     ticket = Ticket.query.get_or_404(id)
     db.session.delete(ticket)
     db.session.commit()
-    return redirect(url_for("ticket_all"))
+
+    if current_user.id == 1:#JackPotの場合は、チケット一覧へ
+        return redirect(url_for("ticket_all"))
+    return redirect(url_for("profile", id=current_user.id))#他ユーザはプロフィールへ
 
 # --- user画面 ---
 @app.route("/profile/<int:id>")
@@ -211,7 +214,10 @@ def profile(id):
         return "<h1><h1>アカウントが違うよ！<h1><h1>"
     else:
         pass
-    return render_template("profile.html",user=User.query.get(id))
+
+    user=User.query.get(id)
+    tickets = Ticket.query.filter_by(user_id=id).all()#ユーザの申請中チケットを表示
+    return render_template("profile.html",user=user,tickets=tickets)
 
 # --- チップ交換 ---
 @app.route("/exchange/<int:id>", methods=["GET",'POST'])
