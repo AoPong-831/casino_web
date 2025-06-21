@@ -14,11 +14,14 @@
 名前：{{user.name}}<br>
 チップ：{{user.chip}}<br>
 ポイント：{{user.point}}<br>
-<br>
 
-<button><a href="/ticket_create/{{ user.id }}">ATM処理</a></button>
-<button><a href="/exchange/{{ user.id }}">チップ購入</a></button>
+<p>
+<button><a href="/ticket_create/{{ user.id }}">チップ：引出・預入</a></button>
+</p>
+<button><a href="/exchange/{{ user.id }}">ポイント➡チップ交換</a></button>
+<p>
 <button onclick="window.location.href='/ranking'">戻る</button>
+</p>
 
 <p>===[申請済みチケット一覧]===</p>
 
