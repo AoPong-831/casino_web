@@ -1,6 +1,6 @@
 ★id=1, name=JackPot, pw=casino <=rootユーザ
 ===
-User:id, name, pw, chip, point, last_login
+User:id, name, username, pw, chip, point, last_login
 Ticket:id, user, type(引出、預入、ユーザ登録、月初めボーナス), category(chip, point), value, user_pw
 ===
 
@@ -38,6 +38,8 @@ adminがname,pwなどを編集できるようにする。
 
 来店とチップ数ログ残したい。
 >>ほかの人のログ(チップ推移)見れたら面白い
+>>>>log.db を作って、id, user_id, chip, date, チケット発行のたびにデータ追加する。
+>>>>name検索し、dateが一致した場合は、chipを上書き。
 
 交通費事前登録、ログイン時に自動チケット発行
 ポイント申請時に明細書きたい
@@ -46,5 +48,3 @@ adminがname,pwなどを編集できるようにする。
 各ゲームルールを記載
 
 ATM処理 >>> チップ、ポイントに分ける
-
-10,000p = 1,000 chip + a いる？？

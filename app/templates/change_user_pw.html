@@ -1,0 +1,13 @@
+{% block content %}
+<form method="POST">
+    <h1>PW変更ページ</h1>
+    変更するユーザ名：{{user.name}}<br>
+    <label for="name">新PW：</label>
+    <input type="pw" id="pw" name="pw" required>
+    <br>
+    <br>
+    <button type="submit">変更</button>
+    <button onclick="history.back()">戻る</button>
+</form>
+
+{% endblock %}

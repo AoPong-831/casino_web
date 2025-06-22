@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}ユーザname変更ページ{% endblock %}
+
+{% block content %}
+<form method="POST">
+    <h1>名前変更ページ</h1>
+    旧現在：{{user.name}}<br>
+    <label for="name">新名前：</label>
+    <input type="name" id="name" name="name" required>
+    <br>
+    <br>
+    <button type="submit">変更</button>
+    <button onclick="history.back()">戻る</button>
+</form>
+
+{% endblock %}

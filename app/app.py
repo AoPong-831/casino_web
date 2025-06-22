@@ -77,8 +77,44 @@ def ranking():
     users = User.query.order_by(User.chip.desc()).all()#usersをchipで降順(desc){昇順はasc}
     return render_template("ranking.html",users=users,current_user=current_user)
 
+# --- ユーザーname変更 ---
+@app.route('/change_user_name/<int:id>', methods=["GET","POST"])
+def change_name_user(id):
+    #自分の画面以外見れない
+    if current_user.id == 1:
+        pass
+    elif current_user.id != id:
+        return "<h1>アカウントが違うよ！<h1>"
+    else:
+        pass
+
+    if request.method == "POST":
+        user = User.query.get(id)
+        user.name = request.form["name"]
+        db.session.commit()
+        return redirect(url_for("ranking"))
+    return render_template("change_user_name.html", user=User.query.get(id))
+
+# --- ユーザーusername変更 ---
+@app.route('/change_user_username/<int:id>', methods=["GET","POST"])
+def change_username_user(id):
+    #自分の画面以外見れない
+    if current_user.id == 1:
+        pass
+    elif current_user.id != id:
+        return "<h1>アカウントが違うよ！<h1>"
+    else:
+        pass
+
+    if request.method == "POST":
+        user = User.query.get(id)
+        user.username = request.form["username"]
+        db.session.commit()
+        return redirect(url_for("login"))
+    return render_template("change_user_username.html", user=User.query.get(id))
+
 # --- ユーザーPW変更 ---
-@app.route('/change_pw_user/<int:id>', methods=["GET","POST"])
+@app.route('/change_user_pw/<int:id>', methods=["GET","POST"])
 def change_pw_user(id):
     #自分の画面以外見れない
     if current_user.id == 1:
@@ -93,7 +129,7 @@ def change_pw_user(id):
         user.pw = request.form["pw"]
         db.session.commit()
         return redirect(url_for("login"))
-    return render_template("change_pw_user.html", user=User.query.get(id))
+    return render_template("change_user_pw.html", user=User.query.get(id))
 
 # --- ユーザ削除 ---
 @app.route('/delete_user/<int:id>', methods=["GET",'POST'])

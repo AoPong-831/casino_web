@@ -4,26 +4,20 @@
 {% block content %}
 <p>プロフィール</p>
 
-<!--- pw = test or rootユーザの時表示 -->
-{% if current_user.id == 1 or user.pw == "test"%}
-    <a href="/change_pw_user/{{ user.id }}">PW変更ページ</a>
-    <br>
-    <br>
-{% endif %} 
-
 名前：{{user.name}}<br>
 ユーザ名：{{user.username}}<br>
 チップ：{{user.chip}}<br>
 ポイント：{{user.point}}<br>
 
 <p>
-<button><a href="/ticket_create/{{ user.id }}">チップ：引出・預入</a></button>
+<button onclick="window.location.href='/ticket_create/{{ user.id }}'">チップ：引出・預入</a></button>
 </p>
-<button><a href="/exchange/{{ user.id }}">ポイント➡チップ交換</a></button>
+<button onclick="window.location.href='/exchange/{{ user.id }}'">ポイント➡チップ交換</a></button>
 <p>
 <button onclick="window.location.href='/ranking'">戻る</button>
 </p>
-
+<br>
+<br>
 <p>===[申請済みチケット一覧]===</p>
 
 {% if tickets == [] %}
@@ -62,4 +56,15 @@
         {% endfor %}
     </table>
 {% endif %}
+
+<p>===[設定]===</p>
+<!--- pw = test or rootユーザの時表示 -->
+<button onclick="window.location.href='/change_user_name/{{ user.id }}'">名前変更</a></button>
+<button onclick="window.location.href='/change_user_username/{{ user.id }}'">ユーザ名変更</a></button>
+<button onclick="window.location.href='/change_user_pw/{{ user.id }}'">PW変更</a></button>
+{% if current_user.id == 1 or user.pw == "test"%}
+    
+    <br>
+    <br>
+{% endif %} 
 {% endblock %}
