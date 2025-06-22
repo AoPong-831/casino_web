@@ -58,13 +58,13 @@
 {% endif %}
 
 <p>===[設定]===</p>
-<!--- pw = test or rootユーザの時表示 -->
-<button onclick="window.location.href='/change_user_name/{{ user.id }}'">名前変更</a></button>
+{% if user.pw == "test"%}<!--- pw = test の時表示 -->
+    <p style="color: red;">PWを変更してください！</p>
+{% endif %}
+{% if current_user.id == 1 %}<!--- rootユーザ の時表示 -->
+    <button onclick="window.location.href='/change_user_name/{{ user.id }}'">名前変更</a></button>
+{% endif %}
 <button onclick="window.location.href='/change_user_username/{{ user.id }}'">ユーザ名変更</a></button>
 <button onclick="window.location.href='/change_user_pw/{{ user.id }}'">PW変更</a></button>
-{% if current_user.id == 1 or user.pw == "test"%}
-    
-    <br>
-    <br>
-{% endif %} 
+
 {% endblock %}
