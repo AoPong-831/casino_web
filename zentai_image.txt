@@ -1,7 +1,7 @@
-★id=1, name=JackPot, pw=admin <=rootユーザ
+★id=1, name=JackPot, pw=casino <=rootユーザ
 ===
 User:id, name, pw, chip, point, last_login
-Ticket:id, user, type, category, value, uer_pw
+Ticket:id, user, type(引出、預入、ユーザ登録、月初めボーナス), category(chip, point), value, user_pw
 ===
 
 [/](login page)"ログインしていない場合はここへ"
@@ -39,15 +39,12 @@ adminがname,pwなどを編集できるようにする。
 来店とチップ数ログ残したい。
 >>ほかの人のログ(チップ推移)見れたら面白い
 
-
+交通費事前登録、ログイン時に自動チケット発行
+ポイント申請時に明細書きたい
 
 [要望]
 各ゲームルールを記載
 
-
 ATM処理 >>> チップ、ポイントに分ける
-
-交通費事前登録、ログイン時に自動チケット発行
-ポイント申請時に明細書きたい
 
 10,000p = 1,000 chip + a いる？？

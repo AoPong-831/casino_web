@@ -4,7 +4,7 @@
 {% block content %}
 <h1>チップランキング</h1>
 
-<h3><a href="/profile/{{ current_user.id }}">マイページ</a></h3>
+<h3><a href="/profile/{{ current_user.id }}">マイページ</a> - <a href="/logout">ログアウト</a></h3>
 {% if current_user.id == 1 %}
     <a href="/ticket_all">チケット一覧</a> <br>
     <p>
@@ -19,10 +19,12 @@
         <th>順位</th>
         <th>名前</th>
         <th>チップ</th>
-        <th>ポイント</th>
-        {% if current_user.id == 1 %}
+        {% if current_user.id == 1 %}<!--管理者のみ見えるところ-->
+            <th>ポイント</th>
             <th>最終ログイン日</th>
             <th>ID</th>
+            <th>username</th>
+            <th>pw</th>
             <th>削除</th>
         {% endif %}
     </tr>
@@ -32,10 +34,12 @@
             <th>{{ loop.index }}</th>
             <th><a href="/profile/{{ user.id }}">{{ user.name }}</a></th>
             <th>{{ user.chip }}</th>
-            <th>{{ user.point }}</th>
-            {% if current_user.id == 1 %}
+            {% if current_user.id == 1 %}<!--管理者のみ見えるところ-->
+                <th>{{ user.point }}</th>
                 <th>{{ user.last_login }}</th>
                 <th>{{ user.id }}</th>
+                <th>{{ user.username }}</th>
+                <th>{{ user.pw }}</th>
                 <th>
                     <form action="{{ url_for('delete_user', id=user.id) }}" method="GET" style="display:inline;">
                         <button type="submit">削除</button>

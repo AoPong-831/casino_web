@@ -32,6 +32,7 @@ login_manager.init_app(app)
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20),nullable=False, unique = True)
+    username = db.Column(db.String(20),nullable=False, unique = True)
     pw = db.Column(db.String(20), nullable=False)
     chip = db.Column(db.Integer)
     point = db.Column(db.Integer)
@@ -43,8 +44,10 @@ class Ticket(db.Model):
     user_id = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(20), nullable=False)
     category = db.Column(db.String(20), nullable=False)
-    #ーザ登録チケット発行時はname置き場に代用、月初めボーナスは"monthly_bonus"
+    #月初めボーナスは"monthly_bonus"
     value = db.Column(db.Integer, nullable=False)
+    user_name = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のname置き場
+    user_username = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のusername置き場
     user_pw = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のpw置き場
 
 #ユーザー読み込み関数
@@ -58,9 +61,10 @@ def add_user():
     if request.method == "POST":
         #チケット発行
         type = "add_user"
-        category = request.form["name"]#categoryをname入れに代用
+        user_name = request.form["name"]
+        user_username = request.form["username"]
         user_pw = request.form["pw"]
-        ticket = Ticket(user_id=1,type=type,category=category,value=500,user_pw=user_pw)
+        ticket = Ticket(user_id=1,type=type,category="",value=500,user_name=user_name,user_username=user_username,user_pw=user_pw)
         db.session.add(ticket)
         db.session.commit()
         return render_template("stanby_add_user.html")
@@ -173,11 +177,12 @@ def ticket_receive(id):
             elif ticket.category == "point":
                 user.point = user.point + ticket.value
         elif ticket.type == "add_user":#アカウント作成
-            name = ticket.category
+            name = ticket.user_name
+            username = ticket.user_username
             pw = ticket.user_pw
             chip = ticket.value#チケット発行時に500を指定
             #DBに書き込む
-            user = User(name=name,pw=pw,chip=chip,point=0,last_login=datetime.now().date())
+            user = User(name=name,username=username,pw=pw,chip=chip,point=0,last_login=datetime.now().date())
             db.session.add(user)
             db.session.commit()
         elif ticket.type == "monthly_bonus":#月初めボーナス
@@ -253,9 +258,9 @@ def exchange(id):
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        name = request.form["name"]
+        username = request.form["username"]
         pw = request.form["pw"]
-        user = User.query.filter_by(name=name, pw=pw).first()#初めにヒットするデータを取得
+        user = User.query.filter_by(username=username, pw=pw).first()#初めにヒットするデータを取得
         if user:
             #月初めボーナス(if 年月が同じなら、何もせず else ボーナス付与)
             if user.last_login.year == datetime.now().year and user.last_login.month == datetime.now().month:
@@ -292,7 +297,7 @@ def import_users():
     if request.method == 'POST':
         #テーブルの初期化
         db.drop_all()#テーブル削除
-        db.create_all() #テーブル作成
+        db.create_all() #テーブル作成(テーブル初期化)
 
         #CSV_インポート
         file = request.files['file']
@@ -305,13 +310,14 @@ def import_users():
 
         for row in reader:#行毎に行う
             name = row.get('name')
+            username = row.get('username')
             pw = row.get('pw')
             chip = row.get('chip')
             point = row.get('point')
             #last_login = ... xxxx-xx-xxの文字列をdate型に変換。※不正な文字列の場合、エラーの原因になる。
             last_login = datetime.strptime(row.get('last_login'),"%Y-%m-%d").date()
-            if name and pw and chip and point and last_login:#空白がなければ
-                user = User(name=name, pw=pw, chip=chip, point=point, last_login=last_login)
+            if name and username and pw and chip and point and last_login:#空白がなければ
+                user = User(name=name, username=username, pw=pw, chip=chip, point=point, last_login=last_login)
                 db.session.add(user)
 
         db.session.commit()
@@ -325,9 +331,9 @@ def export_users():
     users = User.query.all()
 
     def generate():#この関数で逐次的にcsv文字列を生成
-        yield 'name,pw,chip,point,last_login\n'  # CSVヘッダー
+        yield 'name,username,pw,chip,point,last_login\n'  # CSVヘッダー
         for user in users:
-            yield f'{user.name},{user.pw},{user.chip},{user.point},{user.last_login}\n'
+            yield f'{user.name},{user.username},{user.pw},{user.chip},{user.point},{user.last_login}\n'
 
     return Response(
         generate(),
