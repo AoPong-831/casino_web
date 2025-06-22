@@ -44,17 +44,33 @@ class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(20), nullable=False)
-    category = db.Column(db.String(20), nullable=False)
-    #月初めボーナスは"monthly_bonus"
+    category = db.Column(db.String(20), nullable=False)#月初めボーナスは"monthly_bonus"
     value = db.Column(db.Integer, nullable=False)
     user_name = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のname置き場
     user_username = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のusername置き場
     user_pw = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のpw置き場
 
+class Chip_log(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False, unique = True)
+    chip = db.Column(db.Integer, nullable=False)
+    point = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.Date)#年月日だけでいいのでData型。時間まで欲しい場合はDatetime
+
 #ユーザー読み込み関数
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+#Chip_Log記載
+def update_chip_Log(user_id):
+    user=User.query.get(user_id)
+    #dateで検索したlistの中をforで検索して、user_idが一致したら、updateする文を書く。
+    #ここの関数は、userのchip,pointの変更時 and ログイン時に実行する！！
+    chip_log = Chip_log(user_id=user.id,chip=user.chip,point=user.point,date=datetime.now().date())
+    db.session.add(chip_log)
+    db.session.commit()
+
 
 # --- ユーザー追加(リンク直以外でアクセス禁止) ---
 @app.route('/add_user', methods=["GET","POST"])
@@ -83,7 +99,6 @@ def ranking():
 def change_name_user(id):
     if current_user.id != 1:#rootユーザでないときアクセス拒否
         return "403 Forbidden<br> アクセスが拒否されました。<br> [原因]<br> アカウントにアクセス権限がありません。"
-
 
     if request.method == "POST":
         user = User.query.get(id)
@@ -370,6 +385,7 @@ def import_users():
         reader = csv.DictReader(stream)
 
         for row in reader:#行毎に行う
+            id = row.get("id")
             name = row.get('name')
             username = row.get('username')
             pw = row.get('pw')
@@ -379,8 +395,8 @@ def import_users():
             last_login = datetime.strptime(row.get('last_login'),"%Y-%m-%d").date()
             station = row.get('station')
             fare = row.get('fare')
-            if name and username and pw and chip and point and last_login and station and fare:#空白がなければ
-                user = User(name=name, username=username, pw=pw, chip=chip, point=point, last_login=last_login, station=station, fare=fare)
+            if id and name and username and pw and chip and point and last_login and station and fare:#空白がなければ
+                user = User(id = id, name=name, username=username, pw=pw, chip=chip, point=point, last_login=last_login, station=station, fare=fare)
                 db.session.add(user)
 
         db.session.commit()
@@ -394,9 +410,9 @@ def export_users():
     users = User.query.all()
 
     def generate():#この関数で逐次的にcsv文字列を生成
-        yield 'name,username,pw,chip,point,last_login\n'  # CSVヘッダー
+        yield 'id,name,username,pw,chip,point,last_login,station,fare\n'  # CSVヘッダー
         for user in users:
-            yield f'{user.name},{user.username},{user.pw},{user.chip},{user.point},{user.last_login}\n'
+            yield f'{user.id},{user.name},{user.username},{user.pw},{user.chip},{user.point},{user.last_login},{user.station},{user.fare}\n'
 
     return Response(
         generate(),

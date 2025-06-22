@@ -1,7 +1,7 @@
 ★id=1, name=JackPot, pw=casino <=rootユーザ
 ===
 User:id, name, username, pw, chip, point, last_login, station, fare
-Ticket:id, user, type(引出、預入、ユーザ登録、月初めボーナス), category(chip, point), value, user_pw
+Ticket:id, user, type(引出、預入、ユーザ登録、月初めボーナス、交通費ボーナス), category(chip, point), value, user_pw
 ===
 
 [/](login page)"ログインしていない場合はここへ"
@@ -34,16 +34,13 @@ Ticket:id, user, type(引出、預入、ユーザ登録、月初めボーナス)
 <やりたいこと>
 (済)adminがname,pwなどを編集できるようにする。
 (済)チケット申請中をマイページへ
+(済)交通費事前登録、ログイン時に自動チケット発行
 
 来店とチップ数ログ残したい。
 >>ほかの人のログ(チップ推移)見れたら面白い
 >>>>log.db を作って、id, user_id, chip, date, チケット発行のたびにデータ追加する。
 >>>>name検索し、dateが一致した場合は、chipを上書き。
 
-交通費事前登録、ログイン時に自動チケット発行
-ポイント申請時に明細書きたい
-
-[要望]
 各ゲームルールを記載
 
 ATM処理 >>> チップ、ポイントに分ける
