@@ -30,6 +30,8 @@
                         ユーザ登録
                     {% elif ticket.type == "monthly_bonus" %}
                         月初めボーナス
+                    {% elif ticket.type == "fare_bonus" %}
+                        交通費ボーナス
                     {% endif %}
                 </a></th>
                 <th>{{ ticket.category }}</th>

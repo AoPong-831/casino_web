@@ -25,6 +25,8 @@
             <th>ID</th>
             <th>username</th>
             <th>pw</th>
+            <th>最寄り駅</th>
+            <th>運賃</th>
             <th>削除</th>
         {% endif %}
     </tr>
@@ -40,6 +42,8 @@
                 <th>{{ user.id }}</th>
                 <th>{{ user.username }}</th>
                 <th>{{ user.pw }}</th>
+                <th>{{ user.station }}</th>
+                <th>{{ user.fare }}</th>
                 <th>
                     <form action="{{ url_for('delete_user', id=user.id) }}" method="GET" style="display:inline;">
                         <button type="submit">削除</button>

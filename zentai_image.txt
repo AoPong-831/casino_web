@@ -1,6 +1,6 @@
 ★id=1, name=JackPot, pw=casino <=rootユーザ
 ===
-User:id, name, username, pw, chip, point, last_login
+User:id, name, username, pw, chip, point, last_login, station, fare
 Ticket:id, user, type(引出、預入、ユーザ登録、月初めボーナス), category(chip, point), value, user_pw
 ===
 
@@ -32,8 +32,7 @@ Ticket:id, user, type(引出、預入、ユーザ登録、月初めボーナス)
 
 
 <やりたいこと>
-adminがname,pwなどを編集できるようにする。
-
+(済)adminがname,pwなどを編集できるようにする。
 (済)チケット申請中をマイページへ
 
 来店とチップ数ログ残したい。

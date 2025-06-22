@@ -37,7 +37,8 @@ class User(UserMixin, db.Model):
     chip = db.Column(db.Integer)
     point = db.Column(db.Integer)
     last_login = db.Column(db.Date)#年月日だけでいいのでData型。時間まで欲しい場合はDatetime
-    #login_date = ...
+    station = db.Column(db.String(20))#最寄り駅
+    fare = db.Column(db.Integer)#大宮駅までの運賃
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -64,7 +65,7 @@ def add_user():
         user_name = request.form["name"]
         user_username = request.form["username"]
         user_pw = request.form["pw"]
-        ticket = Ticket(user_id=1,type=type,category="",value=500,user_name=user_name,user_username=user_username,user_pw=user_pw)
+        ticket = Ticket(user_id=1,type=type,category="",value=500,user_name=user_name,user_username=user_username,user_pw=user_pw,)
         db.session.add(ticket)
         db.session.commit()
         return render_template("stanby_add_user.html")
@@ -80,13 +81,9 @@ def ranking():
 # --- ユーザーname変更 ---
 @app.route('/change_user_name/<int:id>', methods=["GET","POST"])
 def change_name_user(id):
-    #自分の画面以外見れない
-    if current_user.id == 1:
-        pass
-    elif current_user.id != id:
-        return "<h1>アカウントが違うよ！<h1>"
-    else:
-        pass
+    if current_user.id != 1:#rootユーザでないときアクセス拒否
+        return "403 Forbidden<br> アクセスが拒否されました。<br> [原因]<br> アカウントにアクセス権限がありません。"
+
 
     if request.method == "POST":
         user = User.query.get(id)
@@ -130,6 +127,25 @@ def change_pw_user(id):
         db.session.commit()
         return redirect(url_for("login"))
     return render_template("change_user_pw.html", user=User.query.get(id))
+
+# --- ユーザーstation変更 ---
+@app.route('/change_user_station/<int:id>', methods=["GET","POST"])
+def change_pw_station(id):
+    #自分の画面以外見れない
+    if current_user.id == 1:
+        pass
+    elif current_user.id != id:
+        return "<h1>アカウントが違うよ！<h1>"
+    else:
+        pass
+
+    if request.method == "POST":
+        user = User.query.get(id)
+        user.station = request.form["station"]
+        user.fare = request.form["fare"]
+        db.session.commit()
+        return redirect(url_for("ranking"))
+    return render_template("change_user_station.html", user=User.query.get(id))
 
 # --- ユーザ削除 ---
 @app.route('/delete_user/<int:id>', methods=["GET",'POST'])
@@ -218,11 +234,13 @@ def ticket_receive(id):
             pw = ticket.user_pw
             chip = ticket.value#チケット発行時に500を指定
             #DBに書き込む
-            user = User(name=name,username=username,pw=pw,chip=chip,point=0,last_login=datetime.now().date())
+            user = User(name=name,username=username,pw=pw,chip=chip,point=0,last_login=datetime.now().date(),station="None",fare=0)
             db.session.add(user)
             db.session.commit()
         elif ticket.type == "monthly_bonus":#月初めボーナス
-            pass
+            pass#チップ直渡しのため処理不要
+        elif ticket.type == "fare_bonus":#交通費ボーナス
+            user.point = user.point + user.fare
         else:
             return "ticket.type or category エラー"
         db.session.commit()
@@ -298,20 +316,27 @@ def login():
         pw = request.form["pw"]
         user = User.query.filter_by(username=username, pw=pw).first()#初めにヒットするデータを取得
         if user:
-            #月初めボーナス(if 年月が同じなら、何もせず else ボーナス付与)
-            if user.last_login.year == datetime.now().year and user.last_login.month == datetime.now().month:
-                user.last_login = datetime.now().date()#ログイン最終日付更新(時間もいる場合は.date()を消す)
-            else:
-                if 1000 > (user.chip + (user.point//10)):#総資産100チップ未満
-                    value = 300#300ボーナス
+            if user.username != "JackPot":#rootユーザでない場合、ボーナス付与の分岐へ
+                #月初めボーナス(if 年月が同じなら、何もせず else ボーナス付与)
+                if user.last_login.year == datetime.now().year and user.last_login.month == datetime.now().month:
+                    pass
                 else:
-                    value = 100#100ボーナス
+                    if 1000 > (user.chip + (user.point//10)):#総資産100チップ未満
+                        value = 300#300ボーナス
+                    else:
+                        value = 100#100ボーナス
 
-                ticket = Ticket(user_id=1,type="monthly_bonus",category=user.name,value=value)
-                db.session.add(ticket)
-                db.session.commit()
-
-                user.last_login = datetime.now().date()#ログイン最終日付更新(時間もいる場合は.date()を消す)
+                    ticket = Ticket(user_id=1,type="monthly_bonus",category=user.name,value=value)
+                    db.session.add(ticket)
+                
+                #交通費付与(if 年月日が同じなら、何もせず else 交通費付与)
+                if user.last_login == datetime.now().date():
+                    pass
+                else:
+                    ticket = Ticket(user_id=1,type="fare_bonus",category=user.name,value=user.fare)
+                    db.session.add(ticket)            
+            
+            user.last_login = datetime.now().date()#ログイン最終日付更新(時間もいる場合は.date()を消す)
             db.session.commit()
 
             login_user(user)#ログイン状態に
@@ -352,8 +377,10 @@ def import_users():
             point = row.get('point')
             #last_login = ... xxxx-xx-xxの文字列をdate型に変換。※不正な文字列の場合、エラーの原因になる。
             last_login = datetime.strptime(row.get('last_login'),"%Y-%m-%d").date()
-            if name and username and pw and chip and point and last_login:#空白がなければ
-                user = User(name=name, username=username, pw=pw, chip=chip, point=point, last_login=last_login)
+            station = row.get('station')
+            fare = row.get('fare')
+            if name and username and pw and chip and point and last_login and station and fare:#空白がなければ
+                user = User(name=name, username=username, pw=pw, chip=chip, point=point, last_login=last_login, station=station, fare=fare)
                 db.session.add(user)
 
         db.session.commit()
@@ -376,3 +403,9 @@ def export_users():
         mimetype='text/csv',
         headers={'Content-Disposition': 'attachment; filename=users.csv'}
     )
+
+# --- 初期化用ルート（最初だけ使う） ---
+@app.route('/initdb_casino')
+def init_db():
+    db.create_all()  # テーブル作成
+    return "DB Initialized"

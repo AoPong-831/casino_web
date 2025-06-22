@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}ユーザstation変更ページ{% endblock %}
+
+{% block content %}
+<form method="POST">
+    <h1>最寄り駅 変更ページ</h1>
+    ユーザ名：{{user.name}}<br>
+    <label for="station">最寄り駅：</label>
+    <input type="station" id="station" name="station" required>駅<!--駅名だけにするため、わざと"駅"って書いてる-->
+    <br>
+    <label for="fare">運賃：</label>
+    <input type="fare" id="fare" name="fare" required>
+    <br>
+    <br>
+    <button type="submit">変更</button>
+    <button onclick="history.back()">戻る</button>
+</form>
+
+{% endblock %}

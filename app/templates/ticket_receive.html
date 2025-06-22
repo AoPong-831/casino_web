@@ -46,15 +46,21 @@
 {% elif ticket.type == "add_user" %}
     <p>type:ユーザ追加</p>
     =================<br>
-    名前：{{ ticket.category }}<br>
+    名前：{{ ticket.category }}<br><!--name表示-->
     chip：{{ ticket.value }} <br>
     =================<br>
 {% elif ticket.type == "monthly_bonus" %}
     <p>type:月初めボーナス</p>
     =================<br>
-    名前：{{ ticket.category }}<br>
+    名前：{{ ticket.category }}<br><!--name表示-->
     chip：{{ ticket.value }} <br>
     <strong>直接チップを渡してください！</strong><br>
+    =================<br>
+{% elif ticket.type == "fare_bonus" %}
+    <p>type:交通費ボーナス</p>
+    =================<br>
+    名前：{{ ticket.category }}<br><!--name表示-->
+    chip：{{ ticket.value }} <br>
     =================<br>
 {% endif %}
 
