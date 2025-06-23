@@ -2,6 +2,7 @@
 ===
 User:id, name, username, pw, chip, point, last_login, station, fare
 Ticket:id, user, type(引出、預入、ユーザ登録、月初めボーナス、交通費ボーナス), category(chip, point), value, user_pw
+Chip_log:log.id, user_id, user_name, chip, date
 ===
 
 [/](login page)"ログインしていない場合はここへ"
@@ -37,9 +38,11 @@ Ticket:id, user, type(引出、預入、ユーザ登録、月初めボーナス�
 (済)交通費事前登録、ログイン時に自動チケット発行
 
 来店とチップ数ログ残したい。
+☆アカウント作ったしょっぱなどうしよう。更新されちゃう
+>>グラフ表示時に、初期だけ500にして表示すればok
 >>ほかの人のログ(チップ推移)見れたら面白い
->>>>log.db を作って、id, user_id, chip, date, チケット発行のたびにデータ追加する。
->>>>name検索し、dateが一致した場合は、chipを上書き。
+>>>>csvに今までのデータを手打ちする。
+>>>>マイページにグラフ表示！！
 
 各ゲームルールを記載
 

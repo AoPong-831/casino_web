@@ -52,7 +52,8 @@ class Ticket(db.Model):
 
 class Chip_log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False, unique = True)
+    user_id = db.Column(db.Integer, nullable=False)
+    user_name = db.Column(db.String(20))
     chip = db.Column(db.Integer, nullable=False)
     point = db.Column(db.Integer, nullable=False)
     date = db.Column(db.Date)#年月日だけでいいのでData型。時間まで欲しい場合はDatetime
@@ -63,14 +64,28 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 #Chip_Log記載
-def update_chip_Log(user_id):
-    user=User.query.get(user_id)
-    #dateで検索したlistの中をforで検索して、user_idが一致したら、updateする文を書く。
-    #ここの関数は、userのchip,pointの変更時 and ログイン時に実行する！！
-    chip_log = Chip_log(user_id=user.id,chip=user.chip,point=user.point,date=datetime.now().date())
-    db.session.add(chip_log)
-    db.session.commit()
+def update_chip_Log(user):#userのchip,pointの変更時 and ログイン時に実行する関数
+    today = datetime.now().date()#今日の日付を取得
+    chip_logs = Chip_log.query.filter(Chip_log.date == today).all()#今日更新したデータだけを抽出
 
+    is_Flag = False
+    for log in chip_logs:
+        if log.user_id == user.id:#user.idが一致する場合、更新
+            log.chip = user.chip
+            log.point = user.point
+            
+            is_Flag = True#userが記録された場合のフラグ
+            break
+        else:
+            pass
+
+    if not(is_Flag):#今日初更新の場合(ログイン時を想定)
+        chip_log = Chip_log(user_id=user.id,user_name=user.name,chip=user.chip,point=user.point,date=datetime.now().date())
+        db.session.add(chip_log)
+        is_Flag = True#userが記録された場合のフラグ
+
+    db.session.commit()
+    return
 
 # --- ユーザー追加(リンク直以外でアクセス禁止) ---
 @app.route('/add_user', methods=["GET","POST"])
@@ -251,15 +266,16 @@ def ticket_receive(id):
             #DBに書き込む
             user = User(name=name,username=username,pw=pw,chip=chip,point=0,last_login=datetime.now().date(),station="None",fare=0)
             db.session.add(user)
-            db.session.commit()
         elif ticket.type == "monthly_bonus":#月初めボーナス
             pass#チップ直渡しのため処理不要
         elif ticket.type == "fare_bonus":#交通費ボーナス
             user.point = user.point + user.fare
         else:
             return "ticket.type or category エラー"
+        
         db.session.commit()
         delete_ticket(ticket.id)#ticket削除処理
+        update_chip_Log(user)#Logを記載する関数
         return redirect(url_for("ticket_all"))
     else:
         name = user.name
@@ -331,7 +347,7 @@ def login():
         pw = request.form["pw"]
         user = User.query.filter_by(username=username, pw=pw).first()#初めにヒットするデータを取得
         if user:
-            if user.username != "JackPot":#rootユーザでない場合、ボーナス付与の分岐へ
+            if user.id != 1:#rootユーザでない場合、ボーナス付与の分岐へ
                 #月初めボーナス(if 年月が同じなら、何もせず else ボーナス付与)
                 if user.last_login.year == datetime.now().year and user.last_login.month == datetime.now().month:
                     pass
@@ -367,7 +383,7 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-# --- CSV_インポート ---
+# --- CSV_インポート_users ---
 @app.route("/import_users", methods=["GET","POST"])
 def import_users():
     if request.method == 'POST':
@@ -400,11 +416,11 @@ def import_users():
                 db.session.add(user)
 
         db.session.commit()
-        return redirect(url_for('ranking'))  # 任意の表示先へ
+        return redirect(url_for('ranking'))  #任意の表示先へ
 
     return render_template('import_users.html')
 
-# --- CSV_エクスポート ---
+# --- CSV_エクスポート_users ---
 @app.route('/export_users')
 def export_users():
     users = User.query.all()
@@ -418,6 +434,52 @@ def export_users():
         generate(),
         mimetype='text/csv',
         headers={'Content-Disposition': 'attachment; filename=users.csv'}
+    )
+
+# --- CSV_インポート_lgos ---
+@app.route("/import_logs", methods=["GET","POST"])
+def import_logs():
+    if request.method == 'POST':
+        #CSV_インポート
+        file = request.files['file']
+        if not file or not file.filename.endswith('.csv'):
+            return "CSVファイルを選んでください"
+
+        # CSV読み込み
+        stream = TextIOWrapper(file.stream, encoding='utf-8')
+        reader = csv.DictReader(stream)
+
+        for row in reader:#行毎に行う
+            id = row.get("id")
+            user_id = row.get('user_id')
+            user_name = row.get("user_name")
+            chip = row.get('chip')
+            point = row.get('point')
+            #last_login = ... xxxx-xx-xxの文字列をdate型に変換。※不正な文字列の場合、エラーの原因になる。
+            date = datetime.strptime(row.get('last_login'),"%Y-%m-%d").date()
+            if id and user_id and user_name and chip and point and date:#空白がなければ
+                log = Chip_log(id = id, user_id=user_id, user_name=user_name, chip=chip, point=point, date=date)
+                db.session.add(log)
+
+        db.session.commit()
+        return redirect(url_for('ranking'))  #任意の表示先へ
+
+    return render_template('import_users.html')
+
+# --- CSV_エクスポート_logs ---
+@app.route('/export_logs')
+def export_logs():
+    logs = Chip_log.query.all()
+
+    def generate():#この関数で逐次的にcsv文字列を生成
+        yield 'id,user_id,user_name,chip,point,date\n'  # CSVヘッダー
+        for log in logs:
+            yield f'{log.id},{log.user_id},{log.user_name},{log.chip},{log.point},{log.date}\n'
+
+    return Response(
+        generate(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': 'attachment; filename=chip_log.csv'}
     )
 
 # --- 初期化用ルート（最初だけ使う） ---
