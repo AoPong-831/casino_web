@@ -16,8 +16,7 @@
 <p>
 <button onclick="window.location.href='/ranking'">戻る</button>
 </p>
-<br>
-<br>
+
 <p>===[申請済みチケット一覧]===</p>
 
 {% if tickets == [] %}
@@ -71,5 +70,64 @@
     <p style="color: red;">最寄り駅を設定してください！</p>
     <button onclick="window.location.href='/change_user_station/{{ user.id }}'">最寄り駅変更</a></button>
 {% endif %}
+
+<p>===[Log]===</p>
+
+  <canvas id="myChart" width="600" height="300"></canvas>
+
+  <script>
+    //グラフ描画ライブラリ Chart.js のコンストラクタで新しいオブジェクト ctxを作成(id=myChart,2D描画コンテキスト)
+    const ctx = document.getElementById('myChart').getContext('2d');
+
+    const chart = new Chart(ctx, {
+      type: 'line',//グラフの種類を指定。 line = 折れ線グラフ
+      data: {//データの設定
+        labels: {{ dates|tojson }},//X軸を設定。app.py から渡された datesを JSON形式で展開して埋め込む
+        datasets: [//実際に表示するデータセット(線)を定義
+        {
+          label: 'チップ総数',
+          data: {{ chips|tojson }},//Y軸を設定。app.py から渡された chipsを受け取って描画。
+          borderColor: 'rgba(255, 99, 132, 1)',//線の枠線の色設定(青緑系の不透明カラー)
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',//線の下の塗りつぶしの色。半透明。
+          tension: 0,//線の滑らかさ(0=直線、1=すごく曲線)
+          yAxisID: 'left-y'//左軸に割り当て
+        },
+        {
+          label: 'ポイント総数',
+          data: {{ points|tojson }},//Y軸を設定。app.py から渡された chipsを受け取って描画。
+          borderColor: 'rgba(75, 192, 192, 1)',//線の枠線の色設定(青緑系の不透明カラー)
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',//線の下の塗りつぶしの色。半透明。
+          tension: 0,//線の滑らかさ(0=直線、1=すごく曲線)
+          yAxisID: 'right-y'//右軸に割り当て
+        }
+        ]
+      },
+      options: {//グラフの設定
+        responsive: true,//グラフがウィンドウのサイズに自動でフィットするようにする。
+        scales: {
+            'left-y':{
+                position: 'left',//左に表示する
+                beginAtZero: true,//y軸を0スタートにしている。
+                title: {
+                    display: true,
+                    text: 'チップ'
+                }
+            },
+            'right-y':{
+                position: 'right',
+                beginAtZero: true,
+                grid: {
+                    drawOnChartArea: false//重なりを避ける(グラフ全体にグリッド線を書かない)
+                },
+                title: {
+                    display: true,
+                    text: 'ポイント'
+                }
+            }
+
+        }
+      }
+    });
+  </script>
 
 {% endblock %}

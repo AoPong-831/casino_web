@@ -68,11 +68,11 @@ def load_user(user_id):
 #Chip_Log記載
 def update_chip_Log(user):#userのchip,pointの変更時 and ログイン時に実行する関数
     today = datetime.now().date()#今日の日付を取得
-    chip_logs = Chip_log.query.filter(Chip_log.date == today).all()#今日更新したデータだけを抽出
+    chip_logs = Chip_log.query.filter(Chip_log.date == today,Chip_log.user_id == user.id).all()#今日更新したデータ & user.idが一致したものを抽出
 
     is_Flag = False#userが記録された場合のフラグ
     for log in chip_logs:
-        if log.user_id == user.id:#user.idが一致する場合、更新
+        if log.user_id == user.id:#user.idが一致する場合(logに値があれば、一致するはず)、更新
             log.chip_after = user.chip
             log.point_after = user.point
             is_Flag = True#userが記録された場合のフラグ
@@ -298,17 +298,27 @@ def delete_ticket(id):
 @app.route("/profile/<int:id>")
 @login_required
 def profile(id):
-    #自分の画面以外見れない
-    if current_user.id == 1:
-        pass
-    elif current_user.id != id:
-        return "<h1><h1>アカウントが違うよ！<h1><h1>"
-    else:
-        pass
-
     user=User.query.get(id)
     tickets = Ticket.query.filter_by(user_id=id).all()#ユーザの申請中チケットを表示
-    return render_template("profile.html",user=user,tickets=tickets)
+    chip_logs = Chip_log.query.filter(Chip_log.user_id == user.id).all()#cjip_logデータを抽出
+    #profile.html の Chart.js 用に chip_logs のデータを加工
+    chips = []#チップのデータ
+    points= []#ポイントのデータ
+    dates = []#日付のデータ
+    for log in chip_logs:
+        chips.append(log.chip_before)
+        chips.append(log.chip_after)
+        points.append(log.point_before)
+        points.append(log.point_after)
+        str_date = log.date.strftime("%Y/%m/%d")#2025/06/26 の形でstr型に加工。
+        dates.append(str_date + "_bf")#before
+        dates.append(str_date + "_af")#after
+
+    #自分の画面以外見れない用に！
+    if current_user.id == 1 or current_user.id == id:
+        return render_template("profile.html",user=user,tickets=tickets,chips=chips,points=points,dates=dates)
+    elif current_user.id != id:#該当ユーザ以外はグラフのみ
+        return render_template("profile_view.html",user=user,chips=chips,points=points,dates=dates)
 
 # --- チップ交換 ---
 @app.route("/exchange/<int:id>", methods=["GET",'POST'])
