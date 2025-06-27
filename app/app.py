@@ -189,10 +189,10 @@ def delete_user(id):
         return redirect(url_for('ranking'))
     return render_template("delete_user.html",user=User.query.get(id))
 
-# --- ticket追加 ---
-@app.route("/ticket_create/<int:id>",methods=["GET","POST"])
+# --- ticket追加(chip, point) ---
+@app.route("/ticket_create_chip/<int:id>",methods=["GET","POST"])
 @login_required
-def ticket_create(id):
+def ticket_create_chip(id):
     #自分の画面以外見れない
     if current_user.id == 1:
         pass
@@ -203,28 +203,44 @@ def ticket_create(id):
 
     if request.method == "POST":
         type = request.form["type"]
-        category = request.form["category"]
         value = int(request.form["value"])
 
         #マイナス引出チェック
         user = User.query.get(id)
         if type == "withdrawal":
-            if category == "chip":
-                if user.chip < value:
-                    message="[ERROR]chip不足"
-                    return render_template("ticket_create.html",user=user, message=message)
-            elif category == "point":
-                if user.point < value:
-                    message="[ERROR]ポイント不足。そもそも、チップ交換を押しなさい"
-                    return render_template("ticket_create.html",user=user, message=message)
-            
-        ticket = Ticket(user_id=id,type=type,category=category,value=value)
+            if user.chip < value:
+                message="[ERROR]chip不足"
+                return render_template("ticket_create_chip.html",user=user, message=message)
+        
+        ticket = Ticket(user_id=id,type=type,category="chip",value=value)
         db.session.add(ticket)
         db.session.commit()
         return redirect(url_for("profile", id=current_user.id))
     else:
         user=User.query.get(id)
-        return render_template("ticket_create.html",user=user)
+        return render_template("ticket_create_chip.html",user=user)
+
+@app.route("/ticket_create_point/<int:id>",methods=["GET","POST"])
+@login_required
+def ticket_create_point(id):
+    #自分の画面以外見れない
+    if current_user.id == 1:
+        pass
+    elif current_user.id != id:
+        return "<h1>アカウントが違うよ！<h1>"
+    else:
+        pass
+
+    if request.method == "POST":#預入オンリーの想定
+        value = int(request.form["value"])
+       
+        ticket = Ticket(user_id=id,type="deposit",category="point",value=value)
+        db.session.add(ticket)
+        db.session.commit()
+        return redirect(url_for("profile", id=current_user.id))
+    else:
+        user=User.query.get(id)
+        return render_template("ticket_create_point.html",user=user)
 
 # --- ticket一覧 ---
 @app.route("/ticket_all")

@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-{% block title %}チケット作成ページ{% endblock %}
+{% block title %}チケット(チップ)作成ページ{% endblock %}
 
 {% block content %}
 <p>チケット作成ページ</p>
 
 名前：{{user.name}}<br>
 チップ：{{user.chip}}<br>
-ポイント：{{user.point}}<br>
 <br>
 <form method="POST">
     <label>
@@ -16,15 +15,6 @@
     <label>
         <input type="radio" id="deposit"  name="type" value="deposit">
         預入
-    </label>
-    <br>
-    ----------
-    <br>
-    <label>
-        <input type="radio" id="chip" name="category" value="chip" checked>
-        チップ
-        <input type="radio" id="point" name="category" value="point">
-        ポイント
     </label>
     <br>
     <input type="number" id="value" name="value" min="0" required>

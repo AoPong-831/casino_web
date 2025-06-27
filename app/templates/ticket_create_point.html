@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}チケット(ポイント)作成ページ{% endblock %}
+
+{% block content %}
+<p>チケット作成ページ</p>
+
+名前：{{user.name}}<br>
+<br>
+<form method="POST">
+    申請額を入力してください
+    <br>
+    <input type="number" id="value" name="value" min="0" required>
+    <br>
+    <br>
+    <label>
+        <button type="submit">送信</button>
+        <button onclick="window.location.href='/profile/{{ user.id }}'">戻る</button>
+    </label>
+  </form>
+{% if message %}
+    <p style="color: red;">{{ message }}</p>
+{% endif %}
+  
+
+{% endblock %}

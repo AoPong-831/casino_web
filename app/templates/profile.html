@@ -10,16 +10,20 @@
 ポイント：{{user.point}}<br>
 
 <p>
-<button onclick="window.location.href='/ticket_create/{{ user.id }}'">チップ：引出・預入</a></button>
+<button onclick="window.location.href='/ticket_create_chip/{{ user.id }}'">チップ：引出・預入</a></button>
 </p>
-<button onclick="window.location.href='/exchange/{{ user.id }}'">ポイント➡チップ交換</a></button>
 <p>
+<button onclick="window.location.href='/exchange/{{ user.id }}'">ポイント➡チップ交換</a></button>
+</p>
+<p>
+<button onclick="window.location.href='/ticket_create_point/{{ user.id }}'">ポイント：申請</a></button>
+</p>
 <button onclick="window.location.href='/ranking'">戻る</button>
 </p>
 
 <p>===[申請済みチケット一覧]===</p>
 
-{% if tickets == [] %}
+{% if tickets == []  or user.id == 1 %}<!--交通費ボーナスなどJackPot申請扱いのものを、JackPotのプロフィールにいちいち表示しないようにした。-->
     <p>チケットはありません</p>
 {% else %}
     <table border = "1">
