@@ -66,7 +66,7 @@
 <button onclick="window.location.href='/change_user_username/{{ user.id }}'">ユーザ名変更</a></button>
 <button onclick="window.location.href='/change_user_pw/{{ user.id }}'">PW変更</a></button>
 
-{% if user.station == "None"%}<!--- pw = test の時表示 -->
+{% if user.station == "None" or user.id == 1%}<!--- pw = test の時表示 -->
     <p style="color: red;">最寄り駅を設定してください！</p>
     <button onclick="window.location.href='/change_user_station/{{ user.id }}'">最寄り駅変更</a></button>
 {% endif %}
