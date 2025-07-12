@@ -1,5 +1,11 @@
 ★id=1, name=JackPot, pw=casino <=rootユーザ
 ===
+サイトuploadし直し方法
+.db消す
+/initdb_casino
+/import_users
+/import_logs
+===
 User:id, name, username, pw, chip, point, last_login, station, fare
 Ticket:id, user, type(引出、預入、ユーザ登録、月初めボーナス、交通費ボーナス), category(chip, point), value, user_pw
 Chip_log:log.id, user_id, user_name, chip, date
