@@ -1,0 +1,33 @@
+
+body{
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.85); /* 半透明の黒背景 */
+    }
+.background{/*背景画像用設定*/
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.3;
+    }
+.content{/*そのほかの設定*/
+        position: relative;
+        z-index: 1;
+        color: white;
+        padding: 20px;
+    }
+a {
+      color: orangered; /* リンクを白文字に */
+      text-decoration: underline; /* 下線（好みで） */
+    }
+table{
+        margin: 0 auto;
+
+        background-color: gray;
+    }
