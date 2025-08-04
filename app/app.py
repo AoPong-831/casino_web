@@ -7,6 +7,7 @@ import csv#csv用
 from io import TextIOWrapper#csv用
 from datetime import datetime#ログイン機能用
 from flask import session#ログイン機能用
+from werkzeug.utils import secure_filename#日程表_画像読み込み用(危険なファイル名{../../}などを除去する)
 
 app = Flask(__name__)
 app.secret_key = "your-secret-key" #これないとエラー出るらしい
@@ -18,8 +19,14 @@ DATABASE_URL = os.getenv("postgres://u9ksot7i4tclrr:p325c32f4abfd8f0f9da40ccaba8
 if not DATABASE_URL:
     DATABASE_URL = "sqlite:///local.db" #SQLiteを使う
 
+# 許可する拡張子(日程表用)
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
+#日程表を保存するpath
+UPLOAD_FOLDER = "app/static/images"
+
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER#日程表の保存pathをコンフィグに設定(日程表用)
 
 #DBインスタンス作成
 db = SQLAlchemy(app)
@@ -513,6 +520,28 @@ def export_logs():
         mimetype='text/csv',
         headers={'Content-Disposition': 'attachment; filename=chip_log.csv'}
     )
+
+
+# --- 日程表用_拡張子チェック関数 ---
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# --- 日程表 ---
+@app.route("/calendar", methods=["GET","POST"])
+def calenar():
+    if request.method == 'POST':
+        file = request.files["image"]#ファイル受け取り
+        if file.filename == '':
+            return "ファイルが選択されていません", 400
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            file.save(filepath)
+        return render_template("calendar.html",current_user=current_user)  
+    else:#GET
+        return render_template("calendar.html",current_user=current_user)
+
 
 # --- 初期化用ルート（最初だけ使う） ---
 @app.route('/initdb_casino')

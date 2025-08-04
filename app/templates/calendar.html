@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}TOPページ{% endblock %}
+
+{% block content %}
+
+{% if current_user.id == 1 %}
+
+<h2>Log CSV インポート</h2>
+※ファイル名：calendar.pdf
+<form method="POST" action="/calendar" enctype="multipart/form-data">
+  <p><input type="file" name="image" required></p>
+  <button type="submit">アップロード</button>
+</form>
+
+{% endif %}
+<p><button onclick="window.location.href='/ranking'">戻る</button></p>
+
+<!---カレンダー表示-->
+<iframe src="/static/images/calendar.pdf" width="600" height="800"></iframe>
+
+{% endblock %}
