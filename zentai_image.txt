@@ -1,3 +1,5 @@
+.venv\Scripts\activate
+===
 ★id=1, name=JackPot, pw=casino <=rootユーザ
 ===
 サイトuploadし直し方法
@@ -44,12 +46,14 @@ Chip_log:log.id, user_id, user_name, chip, date
 (済)交通費事前登録、ログイン時に自動チケット発行
 (済)最寄り駅変更をrootに表示する。
 
+どうやらdynoによって1回/day でリセットされている
+⇒heroku postgreSQL と連携できてればリセットされない
+⇒どうやら連携はできているが、heroku postgreSQL のほうでDBができていない。
+⇒再作成が必要？？？
+
 ticketに時間を入れる。いつ申請されたかわからない。
 
 カジノ予定表 DB 管理して、web上で日程追加、人数変更、更新日時記載できるようにしたい。
-
-どうやらdynoによって1回/day でリセットされている
-⇒heroku postgreSQL と連携できてればリセットされない ⇒ 連携できてない！！
 
 競馬用、馬券購入、表示ページ
 
