@@ -46,6 +46,8 @@ Chip_log:log.id, user_id, user_name, chip, date
 (済)交通費事前登録、ログイン時に自動チケット発行
 (済)最寄り駅変更をrootに表示する。
 
+ログイン中のユーザのみランキング別表示もあり(あっきー)
+
 どうやらdynoによって1回/day でリセットされている
 ⇒heroku postgreSQL と連携できてればリセットされない
 ⇒どうやら連携はできているが、heroku postgreSQL のほうでDBができていない。
