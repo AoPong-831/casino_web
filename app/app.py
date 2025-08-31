@@ -521,7 +521,6 @@ def export_logs():
         headers={'Content-Disposition': 'attachment; filename=chip_log.csv'}
     )
 
-
 # --- 日程表用_拡張子チェック関数 ---
 def allowed_file(filename):
     return '.' in filename and \
