@@ -293,6 +293,7 @@ def ticket_receive(id):
         elif ticket.type == "monthly_bonus":#月初めボーナス
             pass#チップ直渡しのため処理不要
         elif ticket.type == "fare_bonus":#交通費ボーナス
+            user = User.query.filter_by(name=ticket.category).first()#初めにヒットするデータを取得
             user.point = user.point + user.fare
         else:
             return "ticket.type or category エラー"
@@ -386,7 +387,7 @@ def login():
                 if user.last_login.year == datetime.now().year and user.last_login.month == datetime.now().month:
                     pass
                 else:
-                    if 1000 > (user.chip + (user.point//10)):#総資産100チップ未満
+                    if 1000 > (user.chip + (user.point//10)):#総資産1000チップ未満
                         value = 300#300ボーナス
                     else:
                         value = 100#100ボーナス
@@ -399,7 +400,7 @@ def login():
                     pass
                 else:
                     ticket = Ticket(user_id=1,type="fare_bonus",category=user.name,value=user.fare)
-                    db.session.add(ticket)            
+                    db.session.add(ticket)
             
             user.last_login = datetime.now().date()#ログイン最終日付更新(時間もいる場合は.date()を消す)
             db.session.commit()
