@@ -78,8 +78,8 @@ h1 {
 /* スマホだけ幅制限＆文字縮小 */
 @media (max-width: 600px) {
   .info .name a {
-    max-width: 180px; /* スマホ時だけ制限 */
-    font-size: clamp(0.7rem, 3vw, 1.1rem); /* スマホで自動縮小 */
+    max-width: 140px; /* スマホ時だけ制限 */
+    font-size: clamp(0.9rem, 3vw, 1.1rem); /* スマホで自動縮小 */
     overflow: hidden; /* はみ出しを隠す */
     text-overflow: clip; /* 省略せずギリギリまで表示 */
   }
