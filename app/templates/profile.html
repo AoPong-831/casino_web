@@ -2,136 +2,158 @@
 {% block title %}プロフィールページ{% endblock %}
 
 {% block content %}
-<p>プロフィール</p>
+<!-- ハンバーガーメニュー -->
+<div id="menu-button">☰</div>
 
-名前：{{user.name}}<br>
-ユーザ名：{{user.username}}<br>
-チップ：{{user.chip}}<br>
-ポイント：{{user.point}}<br>
+<!-- サイドメニュー -->
+<nav id="side-menu">
+    <a href="/profile/{{ current_user.id }}">マイページ</a>
+    <a href="/calendar">開催日程表</a>
+    <a href="/logout">ログアウト</a>
+    {% if current_user.id == 1 %}
+        <hr>
+        <a href="/ticket_all">チケット一覧</a>
+        <a href="/import_users">インポート Users</a>
+        <a href="/import_logs">インポート Logs</a>
+        <a href="/export_users">エクスポート Users</a>
+        <a href="/export_logs">エクスポート Logs</a>
+    {% endif %}
+</nav>
 
-<p>
-<button onclick="window.location.href='/ticket_create_chip/{{ user.id }}'">チップ：引出・預入</a></button>
-</p>
-<p>
-<button onclick="window.location.href='/exchange/{{ user.id }}'">ポイント➡チップ交換</a></button>
-</p>
-<p>
-<button onclick="window.location.href='/ticket_create_point/{{ user.id }}'">ポイント：申請</a></button>
-</p>
-<button onclick="window.location.href='/ranking'">戻る</button>
-</p>
+<!-- オーバーレイ(背景用) -->
+<div id="overlay"></div>
 
-<p>===[申請済みチケット一覧]===</p>
 
-{% if tickets == []  or user.id == 1 %}<!--交通費ボーナスなどJackPot申請扱いのものを、JackPotのプロフィールにいちいち表示しないようにした。-->
-    <p>チケットはありません</p>
-{% else %}
-    <table border = "1">
-        <tr>
-            <th>id</th>
-            <th>タイプ</th>
-            <th>カテゴリ</th>
-            <th>値</th>
-            <th>削除</th>
-        </tr>
-        {% for ticket in tickets %}
-            <tr>
-                <th>{{ ticket.id }}</th>
-                <th>
-                    {% if ticket.type == "withdrawal" %}
-                        引出
-                    {% elif ticket.type == "deposit" %}
-                        預入
-                    {% elif ticket.type == "add_user" %}
-                        ユーザ登録
-                    {% elif ticket.type == "monthly_bonus" %}
-                        月初めボーナス
-                    {% endif %}
-                </th>
-                <th>{{ ticket.category }}</th>
-                <th>{{ ticket.value }}</th>
-                <th>
-                    <form action="{{ url_for('delete_ticket', id=ticket.id) }}" method="POST" style="display:inline;">
-                        <button type="submit">チケット削除</button>
-                    </form>
-                </th>
-            </tr>
-        {% endfor %}
-    </table>
-{% endif %}
+<div class="profile-card">
+    <h2>プロフィール</h2>
+    <p><strong>名前：</strong> {{user.name}}</p>
+    <p><strong>ユーザ名：</strong> {{user.username}}</p>
+    <p><strong>チップ：</strong> {{user.chip}}</p>
+    <p><strong>ポイント：</strong> {{user.point}}</p>
+</div>
 
-<p>===[設定]===</p>
-{% if user.pw == "test"%}<!--- pw = test の時表示 -->
-    <p style="color: red;">PWを変更してください！</p>
-{% endif %}
-{% if current_user.id == 1 %}<!--- rootユーザ の時表示 -->
-    <button onclick="window.location.href='/change_user_name/{{ user.id }}'">名前変更</a></button>
-{% endif %}
-<button onclick="window.location.href='/change_user_username/{{ user.id }}'">ユーザ名変更</a></button>
-<button onclick="window.location.href='/change_user_pw/{{ user.id }}'">PW変更</a></button>
+<div class="action-buttons">
+    <button onclick="window.location.href='/ticket_create_chip/{{ user.id }}'">💰 チップ 引出・預入</button>
+    <button onclick="window.location.href='/exchange/{{ user.id }}'">🔄 ポイント交換</button>
+    <button onclick="window.location.href='/ticket_create_point/{{ user.id }}'">🎟 ポイント申請</button>
+    <button class="back-btn" onclick="window.location.href='/ranking'">⬅ 戻る</button>
+</div>
 
-{% if user.station == "None" or user.id == 1%}<!--- pw = test の時表示 -->
-    <p style="color: red;">最寄り駅を設定してください！</p>
-    <button onclick="window.location.href='/change_user_station/{{ user.id }}'">最寄り駅変更</a></button>
-{% endif %}
+<div class="card">
+    <h3>🎟 申請済みチケット</h3>
 
-<p>===[Log]===</p>
+    {% if tickets == []  or user.id == 1 %}<!--交通費ボーナスなどJackPot申請扱いのものを、JackPotのプロフィールにいちいち表示しないようにした。-->
+        <p>チケットはありません</p>
+    {% else %}
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>id</th><th>タイプ</th><th>カテゴリ</th><th>値</th><th>削除</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                    <tr>
+                        <td>{{ ticket.id }}</td>
+                        <td>
+                            {% if ticket.type == "withdrawal" %}
+                                引出
+                            {% elif ticket.type == "deposit" %}
+                                預入
+                            {% elif ticket.type == "add_user" %}
+                                ユーザ登録
+                            {% elif ticket.type == "monthly_bonus" %}
+                                月初めボーナス
+                            {% endif %}
+                        </td>
+                        <td>{{ ticket.category }}</td>
+                        <td>{{ ticket.value }}</td>
+                        <td>
+                            <form action="{{ url_for('delete_ticket', id=ticket.id) }}" method="POST">
+                                <button class=""danger-btn type="submit">削除</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
 
+<div class="card">
+    <h3>⚙ 設定</h3>
+    {% if user.pw == "test"%}<!--- pw = test の時表示 -->
+        <p class="warn">PWを変更してください！</p>
+    {% endif %}
+    {% if current_user.id == 1 %}<!--- rootユーザ の時表示 -->
+        <button onclick="window.location.href='/change_user_name/{{ user.id }}'">名前変更</a></button>
+    {% endif %}
+    <button onclick="window.location.href='/change_user_username/{{ user.id }}'">ユーザ名変更</a></button>
+    <button onclick="window.location.href='/change_user_pw/{{ user.id }}'">PW変更</a></button>
+
+    {% if user.station == "None" or user.id == 1%}<!--- pw = test の時表示 -->
+        <p class="warn">最寄り駅を設定してください！</p>
+        <button onclick="window.location.href='/change_user_station/{{ user.id }}'">最寄り駅変更</a></button>
+    {% endif %}
+</div>
+
+<div class="card">
+  <h3>📊 Log</h3>
   <canvas id="myChart" width="600" height="300"></canvas>
+    <script>
+        //グラフ描画ライブラリ Chart.js のコンストラクタで新しいオブジェクト ctxを作成(id=myChart,2D描画コンテキスト)
+        const ctx = document.getElementById('myChart').getContext('2d');
 
-  <script>
-    //グラフ描画ライブラリ Chart.js のコンストラクタで新しいオブジェクト ctxを作成(id=myChart,2D描画コンテキスト)
-    const ctx = document.getElementById('myChart').getContext('2d');
-
-    const chart = new Chart(ctx, {
-      type: 'line',//グラフの種類を指定。 line = 折れ線グラフ
-      data: {//データの設定
-        labels: {{ dates|tojson }},//X軸を設定。app.py から渡された datesを JSON形式で展開して埋め込む
-        datasets: [//実際に表示するデータセット(線)を定義
-        {
-          label: 'チップ総数',
-          data: {{ chips|tojson }},//Y軸を設定。app.py から渡された chipsを受け取って描画。
-          borderColor: 'rgba(255, 99, 132, 1)',//線の枠線の色設定(青緑系の不透明カラー)
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',//線の下の塗りつぶしの色。半透明。
-          tension: 0,//線の滑らかさ(0=直線、1=すごく曲線)
-          yAxisID: 'left-y'//左軸に割り当て
-        },
-        {
-          label: 'ポイント総数',
-          data: {{ points|tojson }},//Y軸を設定。app.py から渡された chipsを受け取って描画。
-          borderColor: 'rgba(75, 192, 192, 1)',//線の枠線の色設定(青緑系の不透明カラー)
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',//線の下の塗りつぶしの色。半透明。
-          tension: 0,//線の滑らかさ(0=直線、1=すごく曲線)
-          yAxisID: 'right-y'//右軸に割り当て
-        }
-        ]
-      },
-      options: {//グラフの設定
-        responsive: true,//グラフがウィンドウのサイズに自動でフィットするようにする。
-        scales: {
-            'left-y':{
-                position: 'left',//左に表示する
-                beginAtZero: true,//y軸を0スタートにしている。
-                title: {
-                    display: true,
-                    text: 'チップ'
-                }
+        const chart = new Chart(ctx, {
+        type: 'line',//グラフの種類を指定。 line = 折れ線グラフ
+        data: {//データの設定
+            labels: {{ dates|tojson }},//X軸を設定。app.py から渡された datesを JSON形式で展開して埋め込む
+            datasets: [//実際に表示するデータセット(線)を定義
+            {
+            label: 'チップ総数',
+            data: {{ chips|tojson }},//Y軸を設定。app.py から渡された chipsを受け取って描画。
+            borderColor: 'rgba(255, 99, 132, 1)',//線の枠線の色設定(青緑系の不透明カラー)
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',//線の下の塗りつぶしの色。半透明。
+            tension: 0,//線の滑らかさ(0=直線、1=すごく曲線)
+            yAxisID: 'left-y'//左軸に割り当て
             },
-            'right-y':{
-                position: 'right',
-                beginAtZero: true,
-                grid: {
-                    drawOnChartArea: false//重なりを避ける(グラフ全体にグリッド線を書かない)
-                },
-                title: {
-                    display: true,
-                    text: 'ポイント'
-                }
+            {
+            label: 'ポイント総数',
+            data: {{ points|tojson }},//Y軸を設定。app.py から渡された chipsを受け取って描画。
+            borderColor: 'rgba(75, 192, 192, 1)',//線の枠線の色設定(青緑系の不透明カラー)
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',//線の下の塗りつぶしの色。半透明。
+            tension: 0,//線の滑らかさ(0=直線、1=すごく曲線)
+            yAxisID: 'right-y'//右軸に割り当て
             }
+            ]
+        },
+        options: {//グラフの設定
+            responsive: true,//グラフがウィンドウのサイズに自動でフィットするようにする。
+            scales: {
+                'left-y':{
+                    position: 'left',//左に表示する
+                    beginAtZero: true,//y軸を0スタートにしている。
+                    title: {
+                        display: true,
+                        text: 'チップ'
+                    }
+                },
+                'right-y':{
+                    position: 'right',
+                    beginAtZero: true,
+                    grid: {
+                        drawOnChartArea: false//重なりを避ける(グラフ全体にグリッド線を書かない)
+                    },
+                    title: {
+                        display: true,
+                        text: 'ポイント'
+                    }
+                }
 
+            }
         }
-      }
-    });
-  </script>
+        });
+    </script>
+</div>
 
 {% endblock %}

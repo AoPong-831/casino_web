@@ -1,5 +1,5 @@
 body {
-  background: linear-gradient(135deg, #0a0a0a, #1e1e2f);
+  background: linear-gradient(135deg, #0a0a0a, #1c1c2b);
   color: #fff;
   font-family: "Segoe UI", sans-serif;
   padding: 1rem;
@@ -19,7 +19,8 @@ h1 {
   gap: 1rem;
 }
 
-/* ランキングカード */
+/* ------------------------------------------------------------------ */
+/* ランキング */
 .ranking-card {
   display: flex;
   align-items: center;
@@ -147,4 +148,103 @@ h1 {
 #overlay.active {
   opacity: 1;
   visibility: visible;
+}
+
+/* ------------------------------------------------------------------ */
+/* マイページ(profile) */
+
+/* カード共通 */
+.card, .profile-card {
+  background: rgba(30, 30, 40, 0.9);
+  border: 1px solid gold;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 10px rgba(255,215,0,0.3);
+  animation: fadeInUp 0.6s ease;
+}
+
+.profile-card {
+  background: linear-gradient(145deg, #111, #222);
+  text-align: center;
+}
+
+.profile-card h2 {
+  color: gold;
+  margin-bottom: 1rem;
+}
+
+/* ボタン */
+button {
+  display: block;
+  width: 100%;
+  margin: 0.4rem 0;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #444, #666);
+  color: #fff;
+  font-weight: bold;
+  transition: transform 0.2s, background 0.3s;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #b8860b, #ffd700);
+  color: #000;
+  transform: translateY(-2px);
+}
+
+.action-buttons button {
+  width: 100%; /* 幅いっぱい */
+}
+
+/* 戻るボタンだけ色を変える */
+.action-buttons .back-btn {
+  background: linear-gradient(90deg, #333, #555);
+}
+
+.action-buttons .back-btn:hover {
+  background: linear-gradient(90deg, #ff9800, #ffc107);
+  color: #000;
+}
+
+.danger-btn {
+  background: crimson;
+}
+
+.warn {
+  color: #ff5252;
+  font-weight: bold;
+}
+
+/* テーブル */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.styled-table th, .styled-table td {
+  padding: 0.6rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.styled-table th {
+  background: rgba(255,215,0,0.2);
+  color: gold;
+}
+
+/* アニメーション */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* グラフ用カードの中のキャンバス */
+#myChart {
+  width: 100% !important;  /* スマホに合わせる */
+  height: auto !important; /* 縦横比を保ちつつ縮小 */
+  max-height: 300px;       /* 高さを抑える */
+  margin-top: 1rem;
 }
