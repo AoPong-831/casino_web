@@ -15,11 +15,29 @@ document.querySelectorAll(".ranking-card").forEach((card, i) => {
 });
 
 // メニューボタンとサイドメニューを制御
+/*
 document.addEventListener("DOMContentLoaded", () => {//"DOMContentLoaded" でJSがHTMLより先に動いてエラーになるのを防ぐ。
   const menuButton = document.getElementById("menu-button");
   const sideMenu = document.getElementById("side-menu");
 
   menuButton.addEventListener("click", () => {
     sideMenu.classList.toggle("open");
+  });
+});
+*/
+document.addEventListener("DOMContentLoaded", () => {//オーバーレイ表示
+  const menuButton = document.getElementById("menu-button");
+  const sideMenu = document.getElementById("side-menu");
+  const overlay = document.getElementById("overlay");
+
+  menuButton.addEventListener("click", () => {
+    sideMenu.classList.toggle("open");
+    overlay.classList.toggle("active");
+  });
+
+  // 背景をクリックしたら閉じる
+  overlay.addEventListener("click", () => {
+    sideMenu.classList.remove("open");
+    overlay.classList.remove("active");
   });
 });

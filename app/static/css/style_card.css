@@ -110,3 +110,23 @@ h1 {
 #side-menu.open {
   left: 0;
 }
+
+/* オーバーレイ（初期は非表示）(ランキングのハンバーガーメニューを押したときに、それ以外の画面が半透明で覆われる。) */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5); /* 半透明の黒 */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+}
+
+/* メニューが開いた時に表示 */
+#overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
