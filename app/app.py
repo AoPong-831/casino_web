@@ -456,8 +456,9 @@ def import_users():
             last_login = datetime.strptime(row.get('last_login'),"%Y-%m-%d").date()
             station = row.get('station')
             fare = row.get('fare')
-            if id and name and username and pw and chip and point and last_login and station and fare:#空白がなければ
-                user = User(id = id, name=name, username=username, pw=pw, chip=chip, point=point, last_login=last_login, station=station, fare=fare)
+            icon = row.get('icon')
+            if id and name and username and pw and chip and point and last_login and station and fare and icon:#空白がなければ
+                user = User(id = id, name=name, username=username, pw=pw, chip=chip, point=point, last_login=last_login, station=station, fare=fare, icon=icon)
                 db.session.add(user)
 
         db.session.commit()
@@ -471,9 +472,9 @@ def export_users():
     users = User.query.all()
 
     def generate():#この関数で逐次的にcsv文字列を生成
-        yield 'id,name,username,pw,chip,point,last_login,station,fare\n'  # CSVヘッダー
+        yield 'id,name,username,pw,chip,point,last_login,station,fare,icon\n'  # CSVヘッダー
         for user in users:
-            yield f'{user.id},{user.name},{user.username},{user.pw},{user.chip},{user.point},{user.last_login},{user.station},{user.fare}\n'
+            yield f'{user.id},{user.name},{user.username},{user.pw},{user.chip},{user.point},{user.last_login},{user.station},{user.fare},{user.icon}\n'
 
     return Response(
         generate(),
