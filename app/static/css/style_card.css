@@ -81,7 +81,7 @@ h1 {
 #side-menu {
   position: fixed;
   top: 0;
-  left: -250px; /* 初期は隠す */
+  left: -300px; /* 初期は隠す */
   width: 250px;
   height: 100%;
   background: #111;
