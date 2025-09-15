@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}ランキングページ{% endblock %}
+
+{% block content %}
+<h1>チップランキング</h1>
+
+<h3><a href="/profile/{{ current_user.id }}">マイページ</a> - <a href="/logout">ログアウト</a> - <a href="/calendar">開催日程表</a></h3>
+{% if current_user.id == 1 %}
+    <a href="/ticket_all">チケット一覧</a> <br>
+    <p>
+        <a href="/import_users">インポートusers_CSV</a>
+        -
+        <a href="/import_logs">インポートlogs_CSV</a>
+    </p>
+    <p>
+        <a href="/export_users">エクスポートusers_CSV</a>
+        -
+        <a href="/export_logs">エクスポートlogs_CSV</a>
+    </p>
+{% endif %}
+
+<p>名前：{{current_user.name}} | チップ：{{current_user.chip}} | ポイント：{{current_user.point}}</p>
+<table border = "1">
+    <tr>
+        <th>順位</th>
+        <th>名前</th>
+        <th>チップ</th>
+        {% if current_user.id == 1 %}<!--管理者のみ見えるところ-->
+            <th>ポイント</th>
+            <th>最終ログイン日</th>
+            <th>ID</th>
+            <th>username</th>
+            <th>pw</th>
+            <th>最寄り駅</th>
+            <th>運賃</th>
+            <th>削除</th>
+        {% endif %}
+    </tr>
+    {% for user in users %}
+        <tr>
+            <!-- loop.index はJinja2 が提供する組み込みの変数で、for ループ内での現在の繰り返し回数を1から始まるインデックスとして取得できる -->
+            <th>{{ loop.index }}</th>
+            <th><a href="/profile/{{ user.id }}">{{ user.name }}</a></th>
+            <th>{{ user.chip }}</th>
+            {% if current_user.id == 1 %}<!--管理者のみ見えるところ-->
+                <th>{{ user.point }}</th>
+                <th>{{ user.last_login }}</th>
+                <th>{{ user.id }}</th>
+                <th>{{ user.username }}</th>
+                <th>{{ user.pw }}</th>
+                <th>{{ user.station }}</th>
+                <th>{{ user.fare }}</th>
+                <th>
+                    <form action="{{ url_for('delete_user', id=user.id) }}" method="GET" style="display:inline;">
+                        <button type="submit">削除</button>
+                    </form>
+                </th>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

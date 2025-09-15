@@ -1,0 +1,51 @@
+body {
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  color: #f5f5f5;
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 1rem;
+}
+
+h1 {
+  color: gold;
+  text-align: center;
+  font-size: 1.8em;
+  margin-bottom: 1.5em;
+  text-shadow: 0 0 10px rgba(255,215,0,0.7);
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ranking-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #111;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255,215,0,0.2);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.ranking-card:hover {
+  transform: scale(1.03);
+  background: #222;
+}
+
+.rank {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.first .rank { color: gold; }
+.second .rank { color: silver; }
+.third .rank { color: #cd7f32; }
+
+.chip {
+  font-weight: bold;
+  color: gold;
+}
