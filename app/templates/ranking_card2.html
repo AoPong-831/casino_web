@@ -5,6 +5,7 @@
 <div class="ranking-container">
     <h1>チップランキング</h1>
 
+    <!---
     <h3><a href="/profile/{{ current_user.id }}">マイページ</a> - <a href="/logout">ログアウト</a> - <a href="/calendar">開催日程表</a></h3>
     {% if current_user.id == 1 %}
         <a href="/ticket_all">チケット一覧</a> <br>
@@ -19,8 +20,11 @@
             <a href="/export_logs">エクスポートlogs_CSV</a>
         </p>
     {% endif %}
+    
 
     <p>名前：{{current_user.name}} | チップ：{{current_user.chip}} | ポイント：{{current_user.point}}</p>
+    -->
+    
     <div class="ranking-list">
         <table border = "1">
             <tr>
@@ -42,9 +46,11 @@
                 <tr>
                     <!-- loop.index はJinja2 が提供する組み込みの変数で、for ループ内での現在の繰り返し回数を1から始まるインデックスとして取得できる -->
                     <div class="ranking-card {% if loop.index == 1 %}first{% elif loop.index == 2 %}second{% elif loop.index == 3 %}third{% endif %}">
-                        <div class="rank">#{{ loop.index }}</div>
+                        <div class="rank-badge">
+                            {% if loop.index == 1 %}👑{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}#{{ loop.index }}{% endif %}
+                        </div>
                         <div class="info">
-                            <a href="/profile/{{ user.id }}">{{ user.name }}</a>
+                            <div class="name"><a href="/profile/{{ user.id }}">👤 {{ user.name }}</a></div>
                             <span class="chip">💰 {{ user.chip }}</span>
                         </div>
                     </div>

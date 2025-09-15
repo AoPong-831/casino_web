@@ -1,17 +1,16 @@
 body {
-  background: linear-gradient(135deg, #000000, #1a1a1a);
-  color: #f5f5f5;
+  background: linear-gradient(135deg, #0a0a0a, #1e1e2f);
+  color: #fff;
   font-family: "Segoe UI", sans-serif;
-  margin: 0;
   padding: 1rem;
 }
 
 h1 {
-  color: gold;
   text-align: center;
-  font-size: 1.8em;
+  color: gold;
   margin-bottom: 1.5em;
-  text-shadow: 0 0 10px rgba(255,215,0,0.7);
+  text-shadow: 0 0 10px rgba(255,215,0,0.6);
+  font-size: 1.8em;
 }
 
 .ranking-list {
@@ -20,32 +19,94 @@ h1 {
   gap: 1rem;
 }
 
+/* ランキングカード */
 .ranking-card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: #111;
+  background: #151515;
+  border-radius: 14px;
   padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(255,215,0,0.2);
-  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 4px 12px rgba(255,215,0,0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .ranking-card:hover {
-  transform: scale(1.03);
-  background: #222;
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 6px 16px rgba(255,215,0,0.3);
 }
 
-.rank {
-  font-size: 1.5rem;
+/* 順位バッジ */
+.rank-badge {
+  font-size: 1.6rem;
   font-weight: bold;
+  margin-right: 1rem;
+  min-width: 50px;
+  text-align: center;
 }
 
-.first .rank { color: gold; }
-.second .rank { color: silver; }
-.third .rank { color: #cd7f32; }
+/* 順位カラーリング */
+.first { background: linear-gradient(90deg, #222, #444); border: 2px solid gold; }
+.second { background: linear-gradient(90deg, #222, #333); border: 2px solid silver; }
+.third { background: linear-gradient(90deg, #222, #2a1a0a); border: 2px solid #cd7f32; }
 
-.chip {
+.info .name a {
+  font-size: 1.1rem;
   font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.info .chip {
+  font-size: 0.95rem;
   color: gold;
+  margin-top: 0.2rem;
+}
+
+/* ハンバーガーメニューのボタン */
+#menu-button {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 1.6rem;
+  color: gold;
+  cursor: pointer;
+  z-index: 1001;
+  background: #222;
+  padding: 5px 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* サイドメニュー（デフォルト非表示） */
+#side-menu {
+  position: fixed;
+  top: 0;
+  left: -250px; /* 初期は隠す */
+  width: 250px;
+  height: 100%;
+  background: #111;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+#side-menu a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  padding: 8px 0;
+  border-bottom: 1px solid #333;
+}
+
+#side-menu a:hover {
+  color: gold;
+}
+
+/* メニュー展開時のスタイル */
+#side-menu.open {
+  left: 0;
 }

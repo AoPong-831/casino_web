@@ -24,6 +24,24 @@
 
     <p>名前：{{current_user.name}} | チップ：{{current_user.chip}} | ポイント：{{current_user.point}}</p>
     -->
+
+    <!-- ハンバーガーメニュー -->
+    <div id="menu-button">☰</div>
+
+    <!-- サイドメニュー -->
+    <nav id="side-menu">
+        <a href="/profile/{{ current_user.id }}">マイページ</a>
+        <a href="/calendar">開催日程表</a>
+        <a href="/logout">ログアウト</a>
+        {% if current_user.id == 1 %}
+            <hr>
+            <a href="/ticket_all">チケット一覧</a>
+            <a href="/import_users">インポート Users</a>
+            <a href="/import_logs">インポート Logs</a>
+            <a href="/export_users">エクスポート Users</a>
+            <a href="/export_logs">エクスポート Logs</a>
+        {% endif %}
+    </nav>
     
     <div class="ranking-list">
         <table border = "1">
