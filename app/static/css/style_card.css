@@ -71,6 +71,18 @@ h1 {
   font-weight: bold;
   color: #fff;
   text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;     /* 改行させない */
+}
+
+/* スマホだけ幅制限＆文字縮小 */
+@media (max-width: 600px) {
+  .info .name a {
+    max-width: 140px; /* スマホ時だけ制限 */
+    font-size: clamp(0.7rem, 3vw, 1.1rem); /* スマホで自動縮小 */
+    overflow: hidden; /* はみ出しを隠す */
+    text-overflow: clip; /* 省略せずギリギリまで表示 */
+  }
 }
 
 .info .chip {
