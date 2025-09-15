@@ -321,13 +321,20 @@ def delete_ticket(id):
         return redirect(url_for("ticket_all"))
     return redirect(url_for("profile", id=current_user.id))#他ユーザはプロフィールへ
 
-# --- user画面 ---
+# --- profile画面 ---
 @app.route("/profile/<int:id>")
 @login_required
 def profile(id):
     user=User.query.get(id)
+    users = User.query.order_by(User.chip.desc()).all()#チップ数の降順にソート
+    rank = 1
+    for i in users:#自分のランクを特定
+        if id == i.id:
+            break
+        rank = rank + 1
+
     tickets = Ticket.query.filter_by(user_id=id).all()#ユーザの申請中チケットを表示
-    chip_logs = Chip_log.query.filter(Chip_log.user_id == user.id).all()#cjip_logデータを抽出
+    chip_logs = Chip_log.query.filter(Chip_log.user_id == user.id).all()#chip_logデータを抽出
     #profile.html の Chart.js 用に chip_logs のデータを加工
     chips = []#チップのデータ
     points= []#ポイントのデータ
@@ -343,7 +350,7 @@ def profile(id):
 
     #自分の画面以外見れない用に！
     if current_user.id == 1 or current_user.id == id:
-        return render_template("profile.html",user=user,tickets=tickets,chips=chips,points=points,dates=dates)
+        return render_template("profile.html",user=user,rank=rank,tickets=tickets,chips=chips,points=points,dates=dates)
     elif current_user.id != id:#該当ユーザ以外はグラフのみ
         return render_template("profile_view.html",user=user,chips=chips,points=points,dates=dates)
 

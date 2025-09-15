@@ -7,6 +7,7 @@
 
 <!-- サイドメニュー -->
 <nav id="side-menu">
+    <a href="/ranking">ランキング</a>
     <a href="/profile/{{ current_user.id }}">マイページ</a>
     <a href="/calendar">開催日程表</a>
     <a href="/logout">ログアウト</a>
@@ -26,6 +27,7 @@
 
 <div class="profile-card">
     <h2>プロフィール</h2>
+    <p><strong>順位：</strong> {{rank}}</p>
     <p><strong>名前：</strong> {{user.name}}</p>
     <p><strong>ユーザ名：</strong> {{user.username}}</p>
     <p><strong>チップ：</strong> {{user.chip}}</p>
@@ -36,7 +38,6 @@
     <button onclick="window.location.href='/ticket_create_chip/{{ user.id }}'">💰 チップ 引出・預入</button>
     <button onclick="window.location.href='/exchange/{{ user.id }}'">🔄 ポイント交換</button>
     <button onclick="window.location.href='/ticket_create_point/{{ user.id }}'">🎟 ポイント申請</button>
-    <button class="back-btn" onclick="window.location.href='/ranking'">⬅ 戻る</button>
 </div>
 
 <div class="card">
