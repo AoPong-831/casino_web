@@ -291,10 +291,12 @@ def ticket_receive(id):
             user = User(name=name,username=username,pw=pw,chip=chip,point=0,last_login=datetime.now().date(),station="None",fare=0)
             db.session.add(user)
         elif ticket.type == "monthly_bonus":#月初めボーナス
-            pass#チップ直渡しのため処理不要
+            pass#チップ直渡しのため、chipの処理不要
         elif ticket.type == "fare_bonus":#交通費ボーナス
             user = User.query.filter_by(name=ticket.category).first()#初めにヒットするデータを取得
             user.point = user.point + user.fare
+            #ログイン最終日付更新(時間もいる場合は.date()を消す)
+            user.last_login = datetime.now().date()
         else:
             return "ticket.type or category エラー"
         
@@ -401,8 +403,8 @@ def login():
                 else:
                     ticket = Ticket(user_id=1,type="fare_bonus",category=user.name,value=user.fare)
                     db.session.add(ticket)
-            
-            user.last_login = datetime.now().date()#ログイン最終日付更新(時間もいる場合は.date()を消す)
+                    #最終ログイン日の更新はチケット承認時に実行
+
             db.session.commit()
 
             login_user(user)#ログイン状態に
