@@ -61,3 +61,72 @@ h1 {
   color: gold;
   margin-top: 0.2rem;
 }
+
+/* ハンバーガーメニューのボタン */
+#menu-button {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 1.6rem;
+  color: gold;
+  cursor: pointer;
+  z-index: 1001;
+  background: #222;
+  padding: 5px 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* サイドメニュー（デフォルト非表示） */
+#side-menu {
+  position: fixed;
+  top: 0;
+  left: -300px; /* 初期は隠す */
+  width: 250px;
+  height: 100%;
+  background: #111;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+#side-menu a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  padding: 8px 0;
+  border-bottom: 1px solid #333;
+}
+
+#side-menu a:hover {
+  color: gold;
+}
+
+/* メニュー展開時のスタイル */
+#side-menu.open {
+  left: 0;
+}
+
+/* オーバーレイ（初期は非表示）(ランキングのハンバーガーメニューを押したときに、それ以外の画面が半透明で覆われる。) */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5); /* 半透明の黒 */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+}
+
+/* メニューが開いた時に表示 */
+#overlay.active {
+  opacity: 1;
+  visibility: visible;
+}

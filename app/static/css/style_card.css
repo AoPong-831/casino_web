@@ -84,8 +84,9 @@ h1 {
   left: -300px; /* 初期は隠す */
   width: 250px;
   height: 100%;
-  background: #111;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+  background: linear-gradient(135deg, #0a0a0a, #1e1e2f);
+  border-right: 2px solid gold;
+  box-shadow: 4px 0 15px rgba(255,215,0,0.4);
   padding: 60px 20px;
   display: flex;
   flex-direction: column;
@@ -97,13 +98,30 @@ h1 {
 #side-menu a {
   color: #fff;
   text-decoration: none;
-  font-size: 1.1rem;
-  padding: 8px 0;
-  border-bottom: 1px solid #333;
+  font-size: 1.2rem;
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(255,215,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s, transform 0.2s;
 }
 
-#side-menu a:hover {
+#side-menu a:hover { /* サイドメニューの文字を選択したときに動く動作 */
   color: gold;
+  transform: translateX(5px);
+  text-shadow: 0 0 5px gold;
+}
+
+/* メニュータイトル */
+#side-menu::before {
+  content: "MENU";
+  display: block;
+  font-size: 1.4rem;
+  color: gold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(255,215,0,0.7);
 }
 
 /* メニュー展開時のスタイル */
