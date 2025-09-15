@@ -68,7 +68,8 @@
                     <!-- loop.index はJinja2 が提供する組み込みの変数で、for ループ内での現在の繰り返し回数を1から始まるインデックスとして取得できる -->
                     <div class="ranking-card {% if loop.index == 1 %}first{% elif loop.index == 2 %}second{% elif loop.index == 3 %}third{% endif %}">
                         <div class="rank-badge">
-                            {% if loop.index == 1 %}👑{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}#{{ loop.index }}{% endif %}
+                            <!--順位表示-->
+                            {% if loop.index == 1 %}👑{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}
                         </div>
                         <div class="info">
                             <div class="name">
@@ -99,4 +100,6 @@
         </table>
     </div>
 </div>
+<!-- ランキングの名前表示を調整してくれるjs -->
+<script src="{{ url_for('static', filename='js/adjustNameFont.js') }}"></script>
 {% endblock %}

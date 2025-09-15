@@ -67,22 +67,11 @@ h1 {
 }
 
 .info .name a {
-  font-size: 1.1rem;
   font-weight: bold;
   color: #fff;
   text-decoration: none;
-  display: inline-block;
+  display: inline-block; /* widthを計測できるように */
   white-space: nowrap;     /* 改行させない */
-}
-
-/* スマホだけ幅制限＆文字縮小 */
-@media (max-width: 600px) {
-  .info .name a {
-    max-width: 140px; /* スマホ時だけ制限 */
-    font-size: clamp(1.2rem, 3vw, 1.1rem); /* スマホで自動縮小 */
-    overflow: hidden; /* はみ出しを隠す */
-    text-overflow: clip; /* 省略せずギリギリまで表示 */
-  }
 }
 
 .info .chip {
