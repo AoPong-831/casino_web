@@ -71,7 +71,12 @@
                             {% if loop.index == 1 %}👑{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}#{{ loop.index }}{% endif %}
                         </div>
                         <div class="info">
-                            <div class="name"><a href="/profile/{{ user.id }}">👤 {{ user.name }}</a></div>
+                            <div class="name">
+                                <a href="/profile/{{ user.id }}">
+                                    <img src="{{ url_for('static', filename = user.icon) }}" alt="no_image" class="user-icon">
+                                    {{ user.name }}
+                                </a>
+                            </div>
                             <span class="chip">💰 {{ user.chip }}</span>
                         </div>
                     </div>

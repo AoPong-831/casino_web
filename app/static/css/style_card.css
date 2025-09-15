@@ -50,6 +50,22 @@ h1 {
 .second { background: linear-gradient(90deg, #222, #333); border: 2px solid silver; }
 .third { background: linear-gradient(90deg, #222, #2a1a0a); border: 2px solid #cd7f32; }
 
+.user-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%; /* 丸型にする */
+    margin-right: 8px;
+    vertical-align: middle;
+    object-fit: cover; /* 画像の切れ防止 */
+}
+
+.info {
+  display: flex;
+  justify-content: space-between; /* 左右に配置 */
+  align-items: center;
+  width: 100%; /* 親幅いっぱいに広げる */
+}
+
 .info .name a {
   font-size: 1.1rem;
   font-weight: bold;
@@ -58,9 +74,11 @@ h1 {
 }
 
 .info .chip {
-  font-size: 0.95rem;
+  font-size: 1.4rem;
+  font-weight: bold;
   color: gold;
-  margin-top: 0.2rem;
+  margin: 0;
+  text-shadow: 0 0 6px rgba(255,215,0,0.6);/* 光らせる */
 }
 
 /* ハンバーガーメニューのボタン */

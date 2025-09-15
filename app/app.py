@@ -46,6 +46,7 @@ class User(UserMixin, db.Model):
     last_login = db.Column(db.Date)#年月日だけでいいのでData型。時間まで欲しい場合はDatetime
     station = db.Column(db.String(20))#最寄り駅
     fare = db.Column(db.Integer)#大宮駅までの運賃
+    icon = db.Column(db.String(200), default="icons/default.png")#アイコン
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
