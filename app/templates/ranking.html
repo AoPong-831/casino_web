@@ -8,8 +8,14 @@
 {% if current_user.id == 1 %}
     <a href="/ticket_all">チケット一覧</a> <br>
     <p>
-        <a href="/import_users">インポートCSV</a>
-        <a href="/export_users">エクスポートCSV</a>
+        <a href="/import_users">インポートusers_CSV</a>
+        -
+        <a href="/import_logs">インポートlogs_CSV</a>
+    </p>
+    <p>
+        <a href="/export_users">エクスポートusers_CSV</a>
+        -
+        <a href="/export_logs">エクスポートlogs_CSV</a>
     </p>
 {% endif %}
 
