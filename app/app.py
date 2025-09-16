@@ -3,37 +3,34 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
 from flask import Response#csv用
+from flask_migrate import Migrate
 import csv#csv用
 from io import TextIOWrapper#csv用
 from datetime import datetime#ログイン機能用
 from flask import session#ログイン機能用
 from werkzeug.utils import secure_filename#日程表_画像読み込み用(危険なファイル名{../../}などを除去する)
 
+#Flaskアプリ作成
 app = Flask(__name__)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///local.db")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = "your-secret-key" #これないとエラー出るらしい
 
-#環境変数から DATABASE_URL を取得(Herokuでは自動設定される)
-DATABASE_URL = os.getenv("postgres://u9ksot7i4tclrr:p325c32f4abfd8f0f9da40ccaba8d89d36f548b07d6c6021421d78b1c30b3dd07@ce0lkuo944ch99.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/dfa72fs3dgt167")
+#DBとマイグレート初期化
+db = SQLAlchemy(app)
+migtare = Migrate(app,db)
 
-#ローカルで開発する場合のフォールバック
-if not DATABASE_URL:
-    DATABASE_URL = "sqlite:///local.db" #SQLiteを使う
+#ログイン管理
+login_manager = LoginManager(app)
+#login_manager.init_app(app)
 
 # 許可する拡張子(日程表用)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
 #日程表を保存するpath
 UPLOAD_FOLDER = "app/static/images"
-
-app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER#日程表の保存pathをコンフィグに設定(日程表用)
 
-#DBインスタンス作成
-db = SQLAlchemy(app)
-
-#ログイン管理
-login_manager = LoginManager()
-login_manager.init_app(app)
 
 # --- モデル定義 ---
 class User(UserMixin, db.Model):
