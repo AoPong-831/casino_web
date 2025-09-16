@@ -37,7 +37,7 @@
                 <th>{{ ticket.category }}</th>
                 <th>{{ ticket.value }}</th>
                 <th>
-                    <form action="{{ url_for('delete_ticket', id=ticket.id) }}" method="POST" style="display:inline;">
+                    <form action="{{ url_for('main.delete_ticket', id=ticket.id) }}" method="POST" style="display:inline;">
                         <button type="submit">チケット削除</button>
                     </form>
                 </th>

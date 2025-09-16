@@ -77,7 +77,7 @@ def change_name_user(id):
         user = User.query.get(id)
         user.name = request.form["name"]
         db.session.commit()
-        return redirect(url_for("ranking"))
+        return redirect(url_for("main.ranking"))
     return render_template("change_user_name.html", user=User.query.get(id))
 
 # --- ユーザーusername変更 ---
@@ -95,7 +95,7 @@ def change_username_user(id):
         user = User.query.get(id)
         user.username = request.form["username"]
         db.session.commit()
-        return redirect(url_for("login"))
+        return redirect(url_for("main.login"))
     return render_template("change_user_username.html", user=User.query.get(id))
 
 # --- ユーザーPW変更 ---
@@ -113,7 +113,7 @@ def change_pw_user(id):
         user = User.query.get(id)
         user.pw = request.form["pw"]
         db.session.commit()
-        return redirect(url_for("login"))
+        return redirect(url_for("main.login"))
     return render_template("change_user_pw.html", user=User.query.get(id))
 
 # --- ユーザーstation変更 ---
@@ -132,7 +132,7 @@ def change_pw_station(id):
         user.station = request.form["station"]
         user.fare = request.form["fare"]
         db.session.commit()
-        return redirect(url_for("ranking"))
+        return redirect(url_for("main.ranking"))
     return render_template("change_user_station.html", user=User.query.get(id))
 
 # --- ユーザ削除 ---
@@ -143,7 +143,7 @@ def delete_user(id):
         user = User.query.get_or_404(id)
         db.session.delete(user)
         db.session.commit()
-        return redirect(url_for('ranking'))
+        return redirect(url_for("main.ranking"))
     return render_template("delete_user.html",user=User.query.get(id))
 
 # --- ticket追加(chip, point) ---
@@ -172,7 +172,7 @@ def ticket_create_chip(id):
         ticket = Ticket(user_id=id,type=type,category="chip",value=value)
         db.session.add(ticket)
         db.session.commit()
-        return redirect(url_for("profile", id=current_user.id))
+        return redirect(url_for("main.profile", id=current_user.id))
     else:
         user=User.query.get(id)
         return render_template("ticket_create_chip.html",user=user)
@@ -194,7 +194,7 @@ def ticket_create_point(id):
         ticket = Ticket(user_id=id,type="deposit",category="point",value=value)
         db.session.add(ticket)
         db.session.commit()
-        return redirect(url_for("profile", id=current_user.id))
+        return redirect(url_for("main.profile", id=current_user.id))
     else:
         user=User.query.get(id)
         return render_template("ticket_create_point.html",user=user)
@@ -253,7 +253,7 @@ def ticket_receive(id):
         db.session.commit()
         delete_ticket(ticket.id)#ticket削除処理
         update_chip_Log(user)#Logを記載する関数
-        return redirect(url_for("ticket_all"))
+        return redirect(url_for("main.ticket_all"))
     else:
         name = user.name
         return render_template("ticket_receive.html",ticket=ticket,user=user,name=name)
@@ -267,8 +267,8 @@ def delete_ticket(id):
     db.session.commit()
 
     if current_user.id == 1:#JackPotの場合は、チケット一覧へ
-        return redirect(url_for("ticket_all"))
-    return redirect(url_for("profile", id=current_user.id))#他ユーザはプロフィールへ
+        return redirect(url_for("main.ticket_all"))
+    return redirect(url_for("main.profile", id=current_user.id))#他ユーザはプロフィールへ
 
 # --- profile画面 ---
 @bp.route("/profile/<int:id>")
@@ -326,7 +326,7 @@ def exchange(id):
             user.point = user.point + (input_point%10)#チップ交換のおつり
 
             db.session.commit()
-            return redirect(url_for("ranking"))
+            return redirect(url_for("main.ranking"))
         else:
            message="[ERROR]ポイント不足"
     return render_template("exchange.html",user=user,message=message)
@@ -365,7 +365,7 @@ def login():
             db.session.commit()
 
             login_user(user)#ログイン状態に
-            return redirect(url_for("ranking"))
+            return redirect(url_for("main.ranking"))
         else:
             return "ログイン失敗"
     return render_template("login.html")
@@ -375,7 +375,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("login"))
+    return redirect(url_for("main.login"))
 
 # --- CSV_インポート_users ---
 @bp.route("/import_users", methods=["GET","POST"])
@@ -411,7 +411,7 @@ def import_users():
                 db.session.add(user)
 
         db.session.commit()
-        return redirect(url_for('ranking'))  #任意の表示先へ
+        return redirect(url_for('main.ranking'))  #任意の表示先へ
 
     return render_template('import_users.html')
 
@@ -462,7 +462,7 @@ def import_logs():
                 db.session.add(log)
 
         db.session.commit()
-        return redirect(url_for('ranking'))  #任意の表示先へ
+        return redirect(url_for('main.ranking'))  #任意の表示先へ
 
     return render_template('import_logs.html')
 

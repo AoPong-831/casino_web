@@ -64,11 +64,11 @@
     =================<br>
 {% endif %}
 
-<form action="{{ url_for('ticket_receive', id=ticket.id) }}" method="POST" style="display:inline;">
+<form action="{{ url_for('main.ticket_receive', id=ticket.id) }}" method="POST" style="display:inline;">
     <button type="submit">許可</button>
 </form>
 
-<form action="{{ url_for('delete_ticket', id=ticket.id) }}" method="POST" style="display:inline;">
+<form action="{{ url_for('main.delete_ticket', id=ticket.id) }}" method="POST" style="display:inline;">
     <button type="submit">チケット削除</button>
 </form>
 <button onclick="window.location.href='/ticket_all'">戻る</button>
