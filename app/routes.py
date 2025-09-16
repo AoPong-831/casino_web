@@ -1,74 +1,26 @@
-from flask import Flask,render_template,request,redirect,url_for # type: ignore
-from flask_sqlalchemy import SQLAlchemy
+#ルートとバックエンド処理を書く場所
+from flask import Blueprint,render_template, request, redirect, url_for  # type: ignore
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
 from flask import Response#csv用
-from flask_migrate import Migrate
 import csv#csv用
 from io import TextIOWrapper#csv用
 from datetime import datetime#ログイン機能用
 from flask import session#ログイン機能用
-from werkzeug.utils import secure_filename#日程表_画像読み込み用(危険なファイル名{../../}などを除去する)
+#from werkzeug.utils import secure_filename#日程表_画像読み込み用(危険なファイル名{../../}などを除去する)
+from app import db
 
-#Flaskアプリ作成
-app = Flask(__name__)
+from app.models import User,Ticket,Chip_log
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///local.db")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.secret_key = "your-secret-key" #これないとエラー出るらしい
+bp = Blueprint("main", __name__)  # Blueprintを使う(???)
 
-#DBとマイグレート初期化
-db = SQLAlchemy(app)
-migtare = Migrate(app,db)
-
-#ログイン管理
-login_manager = LoginManager(app)
-#login_manager.init_app(app)
 
 # 許可する拡張子(日程表用)
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
+#ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
 #日程表を保存するpath
-UPLOAD_FOLDER = "app/static/images"
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER#日程表の保存pathをコンフィグに設定(日程表用)
+#UPLOAD_FOLDER = "app/static/images"
+#bp.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER#日程表の保存pathをコンフィグに設定(日程表用)
 
-
-# --- モデル定義 ---
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20),nullable=False, unique = True)
-    username = db.Column(db.String(20),nullable=False, unique = True)
-    pw = db.Column(db.String(20), nullable=False)
-    chip = db.Column(db.Integer)
-    point = db.Column(db.Integer)
-    last_login = db.Column(db.Date)#年月日だけでいいのでData型。時間まで欲しい場合はDatetime
-    station = db.Column(db.String(20))#最寄り駅
-    fare = db.Column(db.Integer)#大宮駅までの運賃
-    icon = db.Column(db.String(200), default="icons/default.png")#アイコン
-
-class Ticket(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
-    type = db.Column(db.String(20), nullable=False)
-    category = db.Column(db.String(20), nullable=False)#月初めボーナスは"monthly_bonus"
-    value = db.Column(db.Integer, nullable=False)
-    user_name = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のname置き場
-    user_username = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のusername置き場
-    user_pw = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のpw置き場
-
-class Chip_log(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
-    user_name = db.Column(db.String(20))
-    chip_before = db.Column(db.Integer, nullable=False)
-    chip_after = db.Column(db.Integer, nullable=False)
-    point_before = db.Column(db.Integer, nullable=False)
-    point_after = db.Column(db.Integer, nullable=False)
-    date = db.Column(db.Date)#年月日だけでいいのでData型。時間まで欲しい場合はDatetime
-
-#ユーザー読み込み関数
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
 #Chip_Log記載
 def update_chip_Log(user):#userのchip,pointの変更時 and ログイン時に実行する関数
@@ -94,7 +46,7 @@ def update_chip_Log(user):#userのchip,pointの変更時 and ログイン時に�
     return
 
 # --- ユーザー追加(リンク直以外でアクセス禁止) ---
-@app.route('/add_user', methods=["GET","POST"])
+@bp.route('/add_user', methods=["GET","POST"])
 def add_user():
     if request.method == "POST":
         #チケット発行
@@ -109,14 +61,14 @@ def add_user():
     return render_template("add_user.html")
 
 # --- ランキング表示 ---
-@app.route('/ranking')
+@bp.route('/ranking')
 @login_required
 def ranking():
     users = User.query.order_by(User.chip.desc()).all()#usersをchipで降順(desc){昇順はasc}
     return render_template("ranking.html",users=users,current_user=current_user)
 
 # --- ユーザーname変更 ---
-@app.route('/change_user_name/<int:id>', methods=["GET","POST"])
+@bp.route('/change_user_name/<int:id>', methods=["GET","POST"])
 def change_name_user(id):
     if current_user.id != 1:#rootユーザでないときアクセス拒否
         return "403 Forbidden<br> アクセスが拒否されました。<br> [原因]<br> アカウントにアクセス権限がありません。"
@@ -129,7 +81,7 @@ def change_name_user(id):
     return render_template("change_user_name.html", user=User.query.get(id))
 
 # --- ユーザーusername変更 ---
-@app.route('/change_user_username/<int:id>', methods=["GET","POST"])
+@bp.route('/change_user_username/<int:id>', methods=["GET","POST"])
 def change_username_user(id):
     #自分の画面以外見れない
     if current_user.id == 1:
@@ -147,7 +99,7 @@ def change_username_user(id):
     return render_template("change_user_username.html", user=User.query.get(id))
 
 # --- ユーザーPW変更 ---
-@app.route('/change_user_pw/<int:id>', methods=["GET","POST"])
+@bp.route('/change_user_pw/<int:id>', methods=["GET","POST"])
 def change_pw_user(id):
     #自分の画面以外見れない
     if current_user.id == 1:
@@ -165,7 +117,7 @@ def change_pw_user(id):
     return render_template("change_user_pw.html", user=User.query.get(id))
 
 # --- ユーザーstation変更 ---
-@app.route('/change_user_station/<int:id>', methods=["GET","POST"])
+@bp.route('/change_user_station/<int:id>', methods=["GET","POST"])
 def change_pw_station(id):
     #自分の画面以外見れない
     if current_user.id == 1:
@@ -184,7 +136,7 @@ def change_pw_station(id):
     return render_template("change_user_station.html", user=User.query.get(id))
 
 # --- ユーザ削除 ---
-@app.route('/delete_user/<int:id>', methods=["GET",'POST'])
+@bp.route('/delete_user/<int:id>', methods=["GET",'POST'])
 @login_required
 def delete_user(id):
     if request.method == "POST":
@@ -195,7 +147,7 @@ def delete_user(id):
     return render_template("delete_user.html",user=User.query.get(id))
 
 # --- ticket追加(chip, point) ---
-@app.route("/ticket_create_chip/<int:id>",methods=["GET","POST"])
+@bp.route("/ticket_create_chip/<int:id>",methods=["GET","POST"])
 @login_required
 def ticket_create_chip(id):
     #自分の画面以外見れない
@@ -225,7 +177,7 @@ def ticket_create_chip(id):
         user=User.query.get(id)
         return render_template("ticket_create_chip.html",user=user)
 
-@app.route("/ticket_create_point/<int:id>",methods=["GET","POST"])
+@bp.route("/ticket_create_point/<int:id>",methods=["GET","POST"])
 @login_required
 def ticket_create_point(id):
     #自分の画面以外見れない
@@ -248,7 +200,7 @@ def ticket_create_point(id):
         return render_template("ticket_create_point.html",user=user)
 
 # --- ticket一覧 ---
-@app.route("/ticket_all")
+@bp.route("/ticket_all")
 @login_required
 def ticket_all():
     if current_user.id != 1:#rootユーザでないときアクセス拒否
@@ -260,7 +212,7 @@ def ticket_all():
     return render_template("ticket_all.html",tickets=tickets,user_dict=user_dict)
 
 # --- ticket受付 ---
-@app.route("/ticket_receive/<int:id>",methods=["GET","POST"])
+@bp.route("/ticket_receive/<int:id>",methods=["GET","POST"])
 @login_required
 def ticket_receive(id):
     if current_user.id != 1:#rootユーザでないときアクセス拒否
@@ -307,7 +259,7 @@ def ticket_receive(id):
         return render_template("ticket_receive.html",ticket=ticket,user=user,name=name)
 
 # --- ticket削除 ---
-@app.route('/delete_ticket/<int:id>', methods=['POST'])
+@bp.route('/delete_ticket/<int:id>', methods=['POST'])
 @login_required
 def delete_ticket(id):
     ticket = Ticket.query.get_or_404(id)
@@ -319,7 +271,7 @@ def delete_ticket(id):
     return redirect(url_for("profile", id=current_user.id))#他ユーザはプロフィールへ
 
 # --- profile画面 ---
-@app.route("/profile/<int:id>")
+@bp.route("/profile/<int:id>")
 @login_required
 def profile(id):
     user=User.query.get(id)
@@ -352,7 +304,7 @@ def profile(id):
         return render_template("profile_view.html",user=user,chips=chips,points=points,dates=dates)
 
 # --- チップ交換 ---
-@app.route("/exchange/<int:id>", methods=["GET",'POST'])
+@bp.route("/exchange/<int:id>", methods=["GET",'POST'])
 @login_required
 def exchange(id):
     #自分の画面以外見れない
@@ -382,7 +334,7 @@ def exchange(id):
 
 
 # --- ログイン(初期ルート) ---
-@app.route("/", methods=["GET", "POST"])
+@bp.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form["username"]
@@ -419,14 +371,14 @@ def login():
     return render_template("login.html")
 
 # --- ログアウト ---
-@app.route("/logout")
+@bp.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for("login"))
 
 # --- CSV_インポート_users ---
-@app.route("/import_users", methods=["GET","POST"])
+@bp.route("/import_users", methods=["GET","POST"])
 def import_users():
     if request.method == 'POST':
         #テーブルの初期化
@@ -464,7 +416,7 @@ def import_users():
     return render_template('import_users.html')
 
 # --- CSV_エクスポート_users ---
-@app.route('/export_users')
+@bp.route('/export_users')
 def export_users():
     users = User.query.all()
 
@@ -480,7 +432,7 @@ def export_users():
     )
 
 # --- CSV_インポート_lgos ---
-@app.route("/import_logs", methods=["GET","POST"])
+@bp.route("/import_logs", methods=["GET","POST"])
 def import_logs():
     db.session.query(Chip_log).delete()#既に存在するChip_log.dbを削除しないと、idがダブてerror
     db.session.commit()
@@ -515,7 +467,7 @@ def import_logs():
     return render_template('import_logs.html')
 
 # --- CSV_エクスポート_logs ---
-@app.route('/export_logs')
+@bp.route('/export_logs')
 def export_logs():
     logs = Chip_log.query.all()
 
@@ -531,28 +483,28 @@ def export_logs():
     )
 
 # --- 日程表用_拡張子チェック関数 ---
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# --- 日程表 ---
-@app.route("/calendar", methods=["GET","POST"])
-def calenar():
-    if request.method == 'POST':
-        file = request.files["image"]#ファイル受け取り
-        if file.filename == '':
-            return "ファイルが選択されていません", 400
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-            file.save(filepath)
-        return render_template("calendar.html",current_user=current_user)  
-    else:#GET
-        return render_template("calendar.html",current_user=current_user)
+#def allowed_file(filename):
+#    return '.' in filename and \
+#           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+#
+# --- 日程表 ---(めんどいので廃案)
+#@bp.route("/calendar", methods=["GET","POST"])
+#def calenar():
+#    if request.method == 'POST':
+#        file = request.files["image"]#ファイル受け取り
+#        if file.filename == '':
+#            return "ファイルが選択されていません", 400
+#        if file and allowed_file(file.filename):
+#            filename = secure_filename(file.filename)
+#            filepath = os.path.join(bp.config["UPLOAD_FOLDER"], filename)
+#            file.save(filepath)
+#        return render_template("calendar.html",current_user=current_user)  
+#    else:#GET
+#        return render_template("calendar.html",current_user=current_user)
 
 
 # --- 初期化用ルート（最初だけ使う） ---
-@app.route('/initdb_casino')
+@bp.route('/initdb_casino')
 def init_db():
     db.create_all()  # テーブル作成
     return "DB Initialized"
