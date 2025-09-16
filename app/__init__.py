@@ -15,6 +15,9 @@ def create_app():
     #Flaskアプリ作成
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///app.db")
+    #Heroku では postgres:// を postgresql:// に変換 ⇒ SQLAlchemy が PostgreSQL接続を認識できるようになる
+    if app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
+        app.config["SQLALCHEMY_DATABASE_URI"] = app.config["SQLALCHEMY_DATABASE_URI"].replace("postgres://", "postgresql://", 1)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.secret_key = "your-secret-key" #これないとエラー出るらしい
 
