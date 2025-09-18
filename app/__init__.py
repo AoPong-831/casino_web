@@ -24,9 +24,9 @@ def create_app():
     #heroku config を設定した後は、Dynoを再起動する。(heroku restart)
 
     if os.getenv("FLASK_ENV") == "production":
-        SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
     else:
-        SQLALCHEMY_DATABASE_URI = "sqlite:///app.db"
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
     #(元のコード)app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///app.db")
     
     
