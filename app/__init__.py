@@ -17,6 +17,12 @@ def create_app():
     
     #FLASK_ENV 依存でPostgreSQL or SQLite を選択。DATABASE_URLがないと接続失敗の可能性あり。
     #ただし、元コードではFLASK_ENVに依存しない分、DATABASE_URLを取得できなければweb上でもSQLiteを使ってしまう欠点がある。
+    #FLASK_ENV...flaskの環境変数。development, production, testing の3種の値を持つ。⇒herokuでは自動的にproductionになる。
+    #ちなみにFLASK_ENVはherokuに設定しないといけないから注意！
+    #heroku config で出てこなければ以下で設定
+    # heroku config:set FLASK_ENV=production
+    #heroku config を設定した後は、Dynoを再起動する。(heroku restart)
+
     if os.getenv("FLASK_ENV") == "production":
         SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     else:
@@ -28,7 +34,10 @@ def create_app():
     if app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
         app.config["SQLALCHEMY_DATABASE_URI"] = app.config["SQLALCHEMY_DATABASE_URI"].replace("postgres://", "postgresql://", 1)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.secret_key = "your-secret-key" #これないとエラー出るらしい
+    #本番ではherokuの環境変数 SECRET_KEY を使う。ローカルでは安全ではないデフォルトを使う。
+    #⇒ SECRET_KEY はブラウザとサーバ間でのユーザ情報を暗号化して送受信するのに必要。
+    #herokuに設定する SECRET_KEY はランダムに決めたものを設定。
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev_key_for_local')
 
     #初期化(???)
     db.init_app(app)
