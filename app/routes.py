@@ -390,7 +390,7 @@ def import_users():
         if not file or not file.filename.endswith('.csv'):
             return "CSVファイルを選んでください"
 
-        # CSV読み込み
+        # CSV読み込み(UTF-8 ⇒ UTF-8でないとheroku_DBが読み込まない)
         stream = TextIOWrapper(file.stream, encoding='utf-8')
         reader = csv.DictReader(stream)
 

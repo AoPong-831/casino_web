@@ -14,7 +14,16 @@ login_manager = LoginManager()
 def create_app():
     #Flaskアプリ作成
     app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///app.db")
+    
+    #FLASK_ENV 依存でPostgreSQL or SQLite を選択。DATABASE_URLがないと接続失敗の可能性あり。
+    #ただし、元コードではFLASK_ENVに依存しない分、DATABASE_URLを取得できなければweb上でもSQLiteを使ってしまう欠点がある。
+    if os.getenv("FLASK_ENV") == "production":
+        SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    else:
+        SQLALCHEMY_DATABASE_URI = "sqlite:///app.db"
+    #(元のコード)app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///app.db")
+    
+    
     #Heroku では postgres:// を postgresql:// に変換 ⇒ SQLAlchemy が PostgreSQL接続を認識できるようになる
     if app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
         app.config["SQLALCHEMY_DATABASE_URI"] = app.config["SQLALCHEMY_DATABASE_URI"].replace("postgres://", "postgresql://", 1)
@@ -31,7 +40,8 @@ def create_app():
     with app.app_context():#★ app context 内でモデルを読み込み
         from app import models
     
-    from app.models import User#login_manager用
+    #DBの追加はここでは？
+    from app.models import User#
 
     # user_loaderをここに書く(???)
     #ユーザー読み込み関数
