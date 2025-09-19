@@ -46,6 +46,19 @@ h1 {
   line-height: 1.2; /* 高さを詰める */
 }
 
+@media (max-width: 600px){ /* スマホ用(幅600px以下の時適用) */
+  .ranking-header{
+    flex-direction: column; /* 縦並びに */
+    align-items: flex-start; /* 左寄せ */
+  }
+
+  .jp-card{
+    margin-top: 0.5rem; /* タイトルの下に配置 */
+    font-size: 0.85rem; /* 少し小さめ */
+    align-self: flex-start; /* 左寄せ */
+  }
+}
+
 .jp-card .label {
   margin-right: 8px;
 }
