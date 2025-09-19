@@ -65,7 +65,9 @@ def add_user():
 @login_required
 def ranking():
     users = User.query.order_by(User.chip.desc()).all()#usersをchipで降順(desc){昇順はasc}
-    return render_template("ranking.html",users=users,current_user=current_user)
+    jp_data = User.query.get(1)#JPの値を取り出す。ID=1
+    jp = jp_data.point#JPを表示するために取り出す。
+    return render_template("ranking.html",users=users,current_user=current_user,jp=jp)
 
 # --- ユーザーname変更 ---
 @bp.route('/change_user_name/<int:id>', methods=["GET","POST"])

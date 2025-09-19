@@ -21,6 +21,39 @@ h1 {
 
 /* ------------------------------------------------------------------ */
 /* ランキング */
+.ranking-header {
+  position: relative; /* h1 を中央に固定するために必要 */
+  align-items: center;           /* 縦の高さを揃える */
+  margin-bottom: 1rem;
+}
+
+.ranking-header h1 {
+  margin: 0; /* デフォルト余白を消す */
+  font-size: 2rem;
+}
+
+.jp-card {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #ffd700, #ffa500);
+  color: #000;
+  padding: 4px 14px; /* 上下のpaddin(余白) */
+  border-radius: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  line-height: 1.2; /* 高さを詰める */
+}
+
+.jp-card .label {
+  margin-right: 8px;
+}
+
+.jp-card .value {
+  font-size: 1.2rem;
+}
+
 .ranking-card {
   display: flex;
   align-items: center;
@@ -192,6 +225,13 @@ h1 {
   animation: fadeInUp 0.6s ease;
 }
 
+/* プロフィールの複数行表示
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2列 *//*
+  gap: 8px 16px; /* 行・列の間隔 *//*
+}
+*/
 .profile-card {
   background: linear-gradient(145deg, #111, #222);
   text-align: center;
