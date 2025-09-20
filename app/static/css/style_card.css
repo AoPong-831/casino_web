@@ -81,12 +81,6 @@ h1 {
   }
 }
 
-/* アニメーション：軽く脈打つ感じ */
-@keyframes jp-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-}
-
 .jp-card .label {
   margin-right: 8px;
 }
