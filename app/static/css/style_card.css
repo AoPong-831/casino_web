@@ -46,39 +46,23 @@ h1 {
   line-height: 1.2; /* 高さを詰める */
 }
 
-/* PCではモバイル用は非表示 */
-.jp-card-mobile {
-  display: none;
-}
-
 @media (max-width: 600px){ /* スマホ用(幅600px以下の時適用) */
-  .ranking-header .jp-card {
-    display: none; /* タイトル横のJPは消す */
+  @media (max-width: 600px){ /* スマホ用(幅600px以下の時適用) */
+  .ranking-header{
+    display: flex;  /* フレックス化 */
+    flex-direction: column; /* 縦並びに */
+    align-items: flex-start; /* 左寄せ */
+    position: static; /* 相対配置は不要 */
   }
 
-  .jp-card-mobile {
-    display: flex;              /* 横並び */
-    align-items: center;        /* 縦位置揃え */
-    justify-content: center;    /* 中央寄せ */
-    gap: 0.5rem;
-
-    position: fixed;
-    bottom: 15px;
-    right: 15px;
-
-    background: linear-gradient(135deg, #ffd700, #ff8c00); /* 金〜オレンジのグラデ */
-    color: #000;
-    padding: 0.6rem 1.2rem;     /* 余白増し */
-    border-radius: 14px;
-
-    font-size: 1.1rem;          /* 文字大きめ */
-    font-weight: bold;
-
-    box-shadow: 0 4px 16px rgba(0,0,0,0.6);
-    z-index: 1000;
-
-    animation: jp-pulse 2s infinite; /* 動きを追加 */
+  .jp-card{
+    position: static; /* absolute解除！ */
+    transform: none; /* translate解除！ */
+    margin-top: 0.5rem; /* タイトルの下に配置 */
+    font-size: 0.85rem; /* 少し小さめ */
+    align-self: flex-start; /* 左寄せ */
   }
+}
 }
 
 .jp-card .label {
