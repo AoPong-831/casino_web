@@ -48,7 +48,6 @@ h1 {
 
 @media (max-width: 600px){ /* スマホ用(幅600px以下の時適用) */
   .jp-card{
-    transform: none; /* translate解除！ */
     position: fixed;
     bottom: 10px;
     right: 10px;
