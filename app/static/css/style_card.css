@@ -57,18 +57,34 @@ h1 {
   }
 
   .jp-card-mobile {
-    display: block; /* スマホでは浮かせて表示 */
+    display: flex;              /* 横並び */
+    align-items: center;        /* 縦位置揃え */
+    justify-content: center;    /* 中央寄せ */
+    gap: 0.5rem;
+
     position: fixed;
-    bottom: 10px;
-    right: 10px;
-    background: #222;
-    color: #f5d142;
-    padding: 0.4rem 0.8rem;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    bottom: 15px;
+    right: 15px;
+
+    background: linear-gradient(135deg, #ffd700, #ff8c00); /* 金〜オレンジのグラデ */
+    color: #000;
+    padding: 0.6rem 1.2rem;     /* 余白増し */
+    border-radius: 14px;
+
+    font-size: 1.1rem;          /* 文字大きめ */
+    font-weight: bold;
+
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6);
     z-index: 1000;
+
+    animation: jp-pulse 2s infinite; /* 動きを追加 */
   }
+}
+
+/* アニメーション：軽く脈打つ感じ */
+@keyframes jp-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
 }
 
 .jp-card .label {
