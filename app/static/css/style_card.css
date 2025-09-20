@@ -47,19 +47,18 @@ h1 {
 }
 
 @media (max-width: 600px){ /* スマホ用(幅600px以下の時適用) */
-  .ranking-header{
-    display: flex;  /* フレックス化 */
-    flex-direction: column; /* 縦並びに */
-    align-items: flex-start; /* 左寄せ */
-    position: static; /* 相対配置は不要 */
-  }
-
   .jp-card{
     position: static; /* absolute解除！ */
     transform: none; /* translate解除！ */
-    margin-top: 0.5rem; /* タイトルの下に配置 */
-    font-size: 0.85rem; /* 少し小さめ */
-    align-self: flex-start; /* 左寄せ */
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.6rem;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #f5d142;
   }
 }
 
