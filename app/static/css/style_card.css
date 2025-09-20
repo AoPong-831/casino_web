@@ -46,13 +46,18 @@ h1 {
   line-height: 1.2; /* 高さを詰める */
 }
 
+/* PCではモバイル用は非表示 */
+.jp-card-mobile {
+  display: none;
+}
+
 @media (max-width: 600px){ /* スマホ用(幅600px以下の時適用) */
   .ranking-header .jp-card {
     display: none; /* タイトル横のJPは消す */
   }
 
   .jp-card-mobile {
-    display: block;
+    display: block; /* スマホでは浮かせて表示 */
     position: fixed;
     bottom: 10px;
     right: 10px;
@@ -64,11 +69,6 @@ h1 {
     box-shadow: 0 2px 8px rgba(0,0,0,0.5);
     z-index: 1000;
   }
-}
-
-/* PCではモバイル用は非表示 */
-.jp-card-mobile {
-  display: none;
 }
 
 .jp-card .label {
