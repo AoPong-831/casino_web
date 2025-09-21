@@ -26,7 +26,7 @@ class Ticket(db.Model):
     user_pw = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のpw置き場
 
 class Chip_log(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)#auroincrement=True ⇒ PostgreSQLでidが自動採番できるようになる。できないとid重複エラー)
     user_id = db.Column(db.Integer, nullable=False)
     user_name = db.Column(db.String(20))
     chip_before = db.Column(db.Integer, nullable=False)
