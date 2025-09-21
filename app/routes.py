@@ -433,7 +433,7 @@ def export_users():
         headers={'Content-Disposition': 'attachment; filename=users.csv'}
     )
 
-# --- CSV_インポート_lgos ---
+# --- CSV_インポート_logs ---
 @bp.route("/import_logs", methods=["GET","POST"])
 def import_logs():
     db.session.query(Chip_log).delete()#既に存在するChip_log.dbを削除しないと、idがダブてerror
@@ -460,7 +460,7 @@ def import_logs():
             #last_login = ... xxxx-xx-xxの文字列をdate型に変換。※不正な文字列の場合、エラーの原因になる。
             date = datetime.strptime(row.get('date'),"%Y-%m-%d").date()
             if id and user_id and user_name and chip_before and chip_after and point_before and point_after and date:#空白がなければ
-                log = Chip_log(id = id, user_id=user_id, user_name=user_name, chip_before=chip_before, chip_after=chip_after, point_before=point_before, point_after=point_after, date=date)
+                log = Chip_log(user_id=user_id, user_name=user_name, chip_before=chip_before, chip_after=chip_after, point_before=point_before, point_after=point_after, date=date)
                 db.session.add(log)
 
         db.session.commit()
