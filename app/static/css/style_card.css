@@ -32,7 +32,7 @@ h1 {
   font-size: 2rem;
 }
 
-.jp-card { /* PC用 */
+.jp-card { /* PC用(jp=JackPot) */
   position: absolute;
   right: 0;
   top: 50%;
@@ -78,7 +78,8 @@ h1 {
   align-items: center;
   background: #151515;
   border-radius: 14px;
-  padding: 1rem;
+  padding: 1.5rem 1rem;
+  min-height: 90px;
   box-shadow: 0 4px 12px rgba(255,215,0,0.1);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
@@ -86,6 +87,38 @@ h1 {
 .ranking-card:hover {
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 6px 16px rgba(255,215,0,0.3);
+}
+
+.info {
+  display: flex;
+  flex-direction: column; /* 縦並びに変更 */
+  gap: 6px; /* 名前、バッジ、チップの間隔 */
+  width: 100%; /* 親幅いっぱいに広げる */
+}
+
+.top-row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.top-row .name a {
+  font-weight: bold;
+  color: #fff;
+  font-size: 1.1rem;
+  text-decoration: none;
+  display: inline-block; /* widthを計測できるように */
+  white-space: nowrap;     /* 改行させない */
+  align-items: center;
+}
+
+.chip {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: gold;
+  margin: 0;
+  text-shadow: 0 0 6px rgba(255,215,0,0.6);/* 光らせる */
 }
 
 /* 順位バッジ */
@@ -111,28 +144,43 @@ h1 {
     object-fit: cover; /* 画像の切れ防止 */
 }
 
-.info {
+/* バッジコンテナ */
+.badge-container {
   display: flex;
-  justify-content: space-between; /* 左右に配置 */
-  align-items: center;
-  width: 100%; /* 親幅いっぱいに広げる */
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.info .name a {
-  font-weight: bold;
-  color: #fff;
-  text-decoration: none;
-  display: inline-block; /* widthを計測できるように */
-  white-space: nowrap;     /* 改行させない */
+.user-badge {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
 
-.info .chip {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: gold;
-  margin: 0;
-  text-shadow: 0 0 6px rgba(255,215,0,0.6);/* 光らせる */
+/* ---------- スマホ用 ---------- */
+@media (max-width: 600px) {
+  /* 名前とバッジを縦並びに変更 */
+  .name-badge {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  /* バッジをカード下部にまとめる */
+  .badge-container {
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+
+  .user-badge {
+    width: 32px;
+    height: 32px;
+  }
 }
+
+
+/* ------------------------------------------------------------------ */
+/* [全体共通] ハンバーガーボタン */
 
 /* ハンバーガーメニューのボタン */
 #menu-button {

@@ -41,14 +41,25 @@
                     <!--順位表示-->
                     {% if loop.index == 1 %}👑{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}
                 </div>
+                
+                <!-- アイコン表示 -->
+                <img src="{{ url_for('static', filename = user.icon) }}" alt="no_image" class="user-icon">
+                
                 <div class="info">
-                    <div class="name">
-                        <a href="/profile/{{ user.id }}">
-                            <img src="{{ url_for('static', filename = user.icon) }}" alt="no_image" class="user-icon">
-                            {{ user.name }}
-                        </a>
+                    <div class="top-row">
+                        <!-- 名前表示 -->
+                        <div class="name">
+                            <a href="/profile/{{ user.id }}">
+                                {{ user.name }}
+                            </a>
+                        </div>
+                        <span class="chip">💰 {{ user.chip }}</span>
                     </div>
-                    <span class="chip">💰 {{ user.chip }}</span>
+                    <!-- バッジ表示欄 -->
+                    <div class="badge-container">
+                        <!-- badgeのfor文が来る予定 -->
+                        <img src="{{ url_for('static', filename='icons/default.png')}}" alt="badge" class="user-badge">
+                    </div>
                 </div>
             </div>
         {% endfor %}

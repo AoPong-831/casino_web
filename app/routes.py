@@ -461,6 +461,7 @@ def import_logs():
             date = datetime.strptime(row.get('date'),"%Y-%m-%d").date()
             if id and user_id and user_name and chip_before and chip_after and point_before and point_after and date:#空白がなければ
                 log = Chip_log(user_id=user_id, user_name=user_name, chip_before=chip_before, chip_after=chip_after, point_before=point_before, point_after=point_after, date=date)
+                #Chip_log=(id=id)を指定すると、postgreSQLの自動id採番を無視することになり、id重複エラーになる
                 db.session.add(log)
 
         db.session.commit()
