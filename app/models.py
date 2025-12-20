@@ -25,7 +25,7 @@ class Ticket(db.Model):
     user_name = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のname置き場
     user_username = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のusername置き場
     user_pw = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のpw置き場
-    create_time = db.Column(db.DateTime,nullable = False, default = datetime.utcnow)#発行時間を追加。defaultを入れとくと、time=ってしなくても自動で入る。
+    create_time = db.Column(db.DateTime,nullable = True, default = datetime.utcnow)#発行時間を追加。defaultを入れとくと、time=ってしなくても自動で入る。
 
 class Chip_log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
