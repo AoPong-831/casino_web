@@ -1,6 +1,7 @@
 #DBモデル
 from flask_login import UserMixin
 from app import db
+from datetime import datetime
 
 # --- モデル定義 ---
 class User(UserMixin, db.Model):
@@ -18,12 +19,13 @@ class User(UserMixin, db.Model):
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
-    type = db.Column(db.String(20), nullable=False)
+    ticket_type = db.Column(db.String(20), nullable=False)
     category = db.Column(db.String(20), nullable=False)#月初めボーナスは"monthly_bonus"
     value = db.Column(db.Integer, nullable=False)
     user_name = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のname置き場
     user_username = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のusername置き場
     user_pw = db.Column(db.String(20), nullable = True)#ユーザ登録チケット発行時のpw置き場
+    create_time = db.Column(db.DateTime,nullable = False, default = datetime.utcnow)#発行時間を追加。defaultを入れとくと、time=ってしなくても自動で入る。
 
 class Chip_log(db.Model):
     id = db.Column(db.Integer, primary_key=True)

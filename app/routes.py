@@ -5,7 +5,7 @@ import os
 from flask import Response#csv用
 import csv#csv用
 from io import TextIOWrapper#csv用
-from datetime import datetime#ログイン機能用
+from datetime import datetime,timezone,timedelta#ログイン機能用、チケット時間管理用
 from flask import session#ログイン機能用
 #from werkzeug.utils import secure_filename#日程表_画像読み込み用(危険なファイル名{../../}などを除去する)
 from app import db
@@ -50,11 +50,11 @@ def update_chip_Log(user):#userのchip,pointの変更時 and ログイン時に�
 def add_user():
     if request.method == "POST":
         #チケット発行
-        type = "add_user"
+        ticket_type = "add_user"
         user_name = request.form["name"]
         user_username = request.form["username"]
         user_pw = request.form["pw"]
-        ticket = Ticket(user_id=1,type=type,category="",value=500,user_name=user_name,user_username=user_username,user_pw=user_pw,)
+        ticket = Ticket(user_id=1,ticket_type=ticket_type,category="",value=500,user_name=user_name,user_username=user_username,user_pw=user_pw,)
         db.session.add(ticket)
         db.session.commit()
         return render_template("stanby_add_user.html")
@@ -161,17 +161,17 @@ def ticket_create_chip(id):
         pass
 
     if request.method == "POST":
-        type = request.form["type"]
+        ticket_type = request.form["type"]
         value = int(request.form["value"])
 
         #マイナス引出チェック
         user = User.query.get(id)
-        if type == "withdrawal":
+        if ticket_type == "withdrawal":
             if user.chip < value:
                 message="[ERROR]chip不足"
                 return render_template("ticket_create_chip.html",user=user, message=message)
         
-        ticket = Ticket(user_id=id,type=type,category="chip",value=value)
+        ticket = Ticket(user_id=id,ticket_type=ticket_type,category="chip",value=value)
         db.session.add(ticket)
         db.session.commit()
         return redirect(url_for("main.profile", id=current_user.id))
@@ -193,7 +193,7 @@ def ticket_create_point(id):
     if request.method == "POST":#預入オンリーの想定
         value = int(request.form["value"])
        
-        ticket = Ticket(user_id=id,type="deposit",category="point",value=value)
+        ticket = Ticket(user_id=id,ticket_type="deposit",category="point",value=value)
         db.session.add(ticket)
         db.session.commit()
         return redirect(url_for("main.profile", id=current_user.id))
@@ -211,7 +211,14 @@ def ticket_all():
     tickets = Ticket.query.all()
     #ticket.user_id の user.name をhtmlで表示するために、User の name だけをdictionary型で作成
     user_dict = {user.id: user.name for user in User.query.all()}
-    return render_template("ticket_all.html",tickets=tickets,user_dict=user_dict)
+    
+    #ticket.create_timeをJSTにするためにhtmlに渡す用の配列を準備
+    view_tickets = tickets
+    JST = timezone(timedelta(hours=9))#日本時間指定
+    for t in view_tickets:
+        if t.create_time:
+            t.create_time = t.create_time.replace(tzinfo=timezone.utc).astimezone(JST)
+    return render_template("ticket_all.html",tickets=view_tickets,user_dict=user_dict)
 
 # --- ticket受付 ---
 @bp.route("/ticket_receive/<int:id>",methods=["GET","POST"])
@@ -224,17 +231,17 @@ def ticket_receive(id):
     user = User.query.get(ticket.user_id)
 
     if request.method == "POST":
-        if ticket.type == "withdrawal":#引出
+        if ticket.ticket_type == "withdrawal":#引出
             if ticket.category == "chip":
                 user.chip = user.chip - ticket.value
             elif ticket.category == "point":
                 user.point = user.point - ticket.value
-        elif ticket.type == "deposit":#預入
+        elif ticket.ticket_type == "deposit":#預入
             if ticket.category == "chip":
                 user.chip = user.chip + ticket.value
             elif ticket.category == "point":
                 user.point = user.point + ticket.value
-        elif ticket.type == "add_user":#アカウント作成
+        elif ticket.ticket_type == "add_user":#アカウント作成
             name = ticket.user_name
             username = ticket.user_username
             pw = ticket.user_pw
@@ -242,15 +249,15 @@ def ticket_receive(id):
             #DBに書き込む
             user = User(name=name,username=username,pw=pw,chip=chip,point=0,last_login=datetime.now().date(),station="None",fare=0)
             db.session.add(user)
-        elif ticket.type == "monthly_bonus":#月初めボーナス
+        elif ticket.ticket_type == "monthly_bonus":#月初めボーナス
             pass#チップ直渡しのため、chipの処理不要
-        elif ticket.type == "fare_bonus":#交通費ボーナス
+        elif ticket.ticket_type == "fare_bonus":#交通費ボーナス
             user = User.query.filter_by(name=ticket.category).first()#初めにヒットするデータを取得
             user.point = user.point + user.fare
             #ログイン最終日付更新(時間もいる場合は.date()を消す)
             user.last_login = datetime.now().date()
         else:
-            return "ticket.type or category エラー"
+            return "ticket.ticket_type or category エラー"
         
         db.session.commit()
         delete_ticket(ticket.id)#ticket削除処理
@@ -353,14 +360,14 @@ def login():
                     else:
                         value = 100#100ボーナス
 
-                    ticket = Ticket(user_id=1,type="monthly_bonus",category=user.name,value=value)
+                    ticket = Ticket(user_id=1,ticket_type="monthly_bonus",category=user.name,value=value)
                     db.session.add(ticket)
                 
                 #交通費付与(if 年月日が同じなら、何もせず else 交通費付与)
                 if user.last_login == datetime.now().date():
                     pass
                 else:
-                    ticket = Ticket(user_id=1,type="fare_bonus",category=user.name,value=user.fare)
+                    ticket = Ticket(user_id=1,ticket_type="fare_bonus",category=user.name,value=user.fare)
                     db.session.add(ticket)
                     #最終ログイン日の更新はチケット承認時に実行
 

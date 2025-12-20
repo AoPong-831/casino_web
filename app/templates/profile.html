@@ -59,13 +59,13 @@
                     <tr>
                         <td>{{ ticket.id }}</td>
                         <td>
-                            {% if ticket.type == "withdrawal" %}
+                            {% if ticket.ticket_type == "withdrawal" %}
                                 引出
-                            {% elif ticket.type == "deposit" %}
+                            {% elif ticket.ticket_type == "deposit" %}
                                 預入
-                            {% elif ticket.type == "add_user" %}
+                            {% elif ticket.ticket_type == "add_user" %}
                                 ユーザ登録
-                            {% elif ticket.type == "monthly_bonus" %}
+                            {% elif ticket.ticket_type == "monthly_bonus" %}
                                 月初めボーナス
                             {% endif %}
                         </td>

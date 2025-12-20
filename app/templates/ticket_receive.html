@@ -6,7 +6,7 @@
 
 発行者：{{ name }}
 <br>
-{% if ticket.type == "withdrawal" %}
+{% if ticket.ticket_type == "withdrawal" %}
     <p>type:引出</p>
 
     {% if ticket.category == "chip" %}
@@ -25,7 +25,7 @@
         </p>
     {% endif %}
 
-{% elif ticket.type == "deposit" %}
+{% elif ticket.ticket_type == "deposit" %}
     <p>type:預入</p>
 
     {% if ticket.category == "chip" %}
@@ -43,20 +43,20 @@
         {{ user.point + ticket.value }}
         </p>
     {% endif %}
-{% elif ticket.type == "add_user" %}
+{% elif ticket.ticket_type == "add_user" %}
     <p>type:ユーザ追加</p>
     =================<br>
     名前：{{ ticket.category }}<br><!--name表示-->
     chip：{{ ticket.value }} <br>
     =================<br>
-{% elif ticket.type == "monthly_bonus" %}
+{% elif ticket.ticket_type == "monthly_bonus" %}
     <p>type:月初めボーナス</p>
     =================<br>
     名前：{{ ticket.category }}<br><!--name表示-->
     chip：{{ ticket.value }} <br>
     <strong>直接チップを渡してください！</strong><br>
     =================<br>
-{% elif ticket.type == "fare_bonus" %}
+{% elif ticket.ticket_type == "fare_bonus" %}
     <p>type:交通費ボーナス</p>
     =================<br>
     名前：{{ ticket.category }}<br><!--name表示-->
