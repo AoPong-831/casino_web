@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}ランキングページ{% endblock %}
+
+{% block content %}
+<a href="/games" class="back-btn">
+    <i class="fa-solid fa-arrow-left"></i>
+    ゲーム一覧へ戻る
+</a>
+
+<section class="rule-page">
+  <h1>Blackjack</h1>
+  <p class="lead">21を超えずに、ディーラーより21に近づけるゲーム。</p>
+
+  <div class="rule-box">
+    <h2>基本ルール</h2>
+    <p>プレイヤーとディーラーにカードを配り、合計値が21に近い方が勝利です。</p>
+  </div>
+
+  <div class="rule-box">
+    <h2>カードの数え方</h2>
+    <ul>
+      <li>2〜10：数字通り</li>
+      <li>J・Q・K：10</li>
+      <li>A：1または11</li>
+    </ul>
+    <h3 class="option-title">特別役：ブラックジャック</h3>
+    <ul>
+      <li>10, J, Q, K + A の2枚のカードのみでできる21のことをブラックジャックと呼びます。</li>
+      <li>ブラックジャックで勝利した場合、配当は1.5倍になります(切り上げ)。</li>
+    </ul>
+  </div>
+
+  <div class="rule-box">
+    <h2>勝敗</h2>
+    <p>21を超えるとバーストで負け。ディーラーより高ければ勝ちです。</p>
+  </div>
+
+  <div class="rule-box">
+    <h2>配当</h2>
+    <ul>
+      <li>1倍</li>
+      <li>BJ：1.5倍(切り上げ)</li>
+    </ul>
+  </div>
+
+  <div class="rule-box">
+    <h2>オプション</h2>
+    <h3 class="option-title">いつでもできる</h3>
+    <ul>
+      <li>Hit：カードを1枚追加</li>
+      <li>Stay：手番を終了</li>
+    </ul>
+    <h3 class="option-title">はじめだけできる</h3>
+    <ul>
+      <li>Double Down：カードを1枚のみ追加する代わりに、掛け金を倍にできる。</li>
+      <li>Split：ハンドが同値の場合、掛け金を倍出すことで可能。<br>
+        ハンドを分け、各1枚づつ追加し、2つのハンドとしてプレイできる。<br>
+        ※AAのハンドをSplitする場合、各1枚づつ追加後強制Stayとなるので注意。</li>
+      <li>Surrender：負けになる代わりに掛け金は半額帰ってくる(切り下げ)。</li>
+      <li>Even Money：ハンドがブラックジャックかつディーラーのアップカードがAの場合に可能。<br>
+        Even Moneyを宣言するとディーラーと勝負しない代わりに掛け金の等倍を得ることができる。</li>
+    </ul>
+  </div>
+
+  <details class="rule-box">
+    <summary>インシュアランス</summary>
+    <h3 class="option-title">説明</h3>
+    <p>プレイヤーはディーラーのハンドがBJの場合、<br>
+      敗北してしまうため保険(insurance)をかけることができる。</p>
+    <h3 class="option-title">発生条件</h3>
+    <p>ディーラーのアップカードがAの場合にのみ発生する特殊なターン</p>
+    <h3 class="option-title">方法</h3>
+    <p>掛け金の半額を追加でハンドの上に置く。</p>
+    <h3 class="option-title">配当</h3>
+    <p>初めの掛け金は全額回収されるが、インシュアランスの掛け金は2倍配当になる。</p>
+  </details>
+
+  <details class="rule-box">
+    <summary>ディーラーの動き</summary>
+    <p>すべてのプレイヤーがアクションを終了するとディーラーのハンドが公開されます。<br>
+      ディーラーのハンドが17未満の場合は、17以上になるまでカードを引き続けます。</p>
+    <h3 class="option-title">つばきちcasinoにおけるソフト17の扱い</h3>
+    <p>A+7でできる17をソフト17と呼びます。<br>
+      つばきちcasinoではディーラーのハンドがソフト17の場合Stayを選択する<br>
+      プレイヤーに優しいルールを採用しています。</p>
+  </details>
+
+  <details class="rule-box">
+    <summary>初心者向けアドバイス</summary>
+    <p>以下の3つを参考にプレイしてみましょう。</p>
+    <ul>
+      <li>11以下のハンドは無条件でHIT<br>
+        ※特に11の場合はDouble Downがおすすめ</li>
+      <li>12~16はディーラーのアップカードによって判断</li>
+      <li>ハード17以上は無条件でSTAY</li>
+    </ul>
+  </details>
+
+</section>
+{% endblock %}

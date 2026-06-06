@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block title %}バカラ{% endblock %}
+
+{% block content %}
+<a href="/games" class="back-btn">
+    <i class="fa-solid fa-arrow-left"></i>
+    ゲーム一覧へ戻る
+</a>
+
+<section class="rule-page">
+  <h1>Baccarat</h1>
+  <p class="lead">Player と Banker のどちらが9に近いかを予想するゲーム。</p>
+
+  <div class="rule-box">
+    <h2>基本ルール</h2>
+    <p>プレイヤーは「Player」「Banker」「Tie」のいずれかに賭けます。<br>
+      ※「Player pair」「Banker pair」「Perfect pair」もサブベットとして賭けることが可能です。<br>
+      カードはPlayer側とBanker側に配られ、合計値の下一桁が9に近い方が勝利です。</p>
+  </div>
+
+  <div class="rule-box">
+    <h2>カードの数え方</h2>
+    <ul>
+      <li>A：1</li>
+      <li>2〜9：数字通り</li>
+      <li>10・J・Q・K：0</li>
+    </ul>
+    <h3 class="option-title">合計値の考え方</h3>
+    <ul>
+      <li>合計が10以上になった場合、下一桁のみを使います。</li>
+      <li>例：7 + 8 = 15 → 5点</li>
+      <li>例：9 + 6 + 4 = 19 → 9点</li>
+    </ul>
+  </div>
+
+  <div class="rule-box">
+    <h2>勝敗</h2>
+    <ul>
+      <li>Player側が9に近い：Playerの勝ち</li>
+      <li>Banker側が9に近い：Bankerの勝ち</li>
+      <li>同点：Tie</li>
+    </ul>
+  </div>
+
+  <div class="rule-box">
+    <h2>配当</h2>
+    <ul>
+      <li>Player勝利：1倍</li>
+      <li>Banker勝利：1倍</li>
+      <li>Tie勝利：8倍</li>
+    </ul>
+  </div>
+
+  <details class="rule-box">
+    <summary>カードの追加ルール</summary>
+
+    <h3 class="option-title">ナチュラル</h3>
+    <p>最初の2枚でどちらかが8点または9点になった場合、ナチュラルとして追加カードは配らず勝敗を判定します。</p>
+
+    <h3 class="option-title">Player側</h3>
+    <ul>
+      <li>0〜5点：カードを1枚追加</li>
+      <li>6〜7点：追加なし</li>
+    </ul>
+
+    <h3 class="option-title">Banker側</h3>
+    <ul>
+      <li>0〜2点：カードを1枚追加</li>
+      <li>7点：追加なし</li>
+    </ul>
+    <p>Banker側の追加カードは、Player側の3枚目のカードによって決まります。</p>
+  <table class="baccarat-draw-table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>0</th>
+        <th>1</th>
+        <th>2</th>
+        <th>3</th>
+        <th>4</th>
+        <th>5</th>
+        <th>6</th>
+        <th>7</th>
+        <th>8</th>
+        <th>9</th>
+      </tr>
+    </thead>
+      <tr>
+        <th>3</th>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td class="stop">×</td>
+        <td>○</td>
+      </tr>
+
+      <tr>
+        <th>4</th>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+      </tr>
+
+      <tr>
+        <th>5</th>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td>○</td>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+      </tr>
+
+      <tr>
+        <th>6</th>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+        <td>○</td>
+        <td>○</td>
+        <td class="stop">×</td>
+        <td class="stop">×</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="table-note">
+    縦軸：Bankerの合計数,横軸：Playerの3枚目の数<br>
+    ○：バンカーが3枚目を引く ／ ×：引かない
+  </p>
+  </details>
+
+  <details class="rule-box">
+    <summary>遊び方の流れ</summary>
+    <ul>
+      <li>Player / Banker / Tie のどれに賭けるか決める</li>
+      <li>Player側とBanker側に2枚ずつカードを配る</li>
+      <li>必要に応じて3枚目を追加する</li>
+      <li>9に近い方を判定する</li>
+      <li>勝った場所に賭けていた人へ配当する</li>
+    </ul>
+  </details>
+
+  <details class="rule-box">
+    <summary>ハウスルール</summary>
+    <ul>
+      <li>Banker手数料5%<br>
+        ※No Commission Baccarat の場合はBankerが6で勝利した場合半額配当
+      </li>
+      <li>Squeezeの権利は$30以上<br>
+        ※No Commission Baccarat の場合は権利なし
+      </li>
+    </ul>
+  </details>
+
+</section>
+{% endblock %}

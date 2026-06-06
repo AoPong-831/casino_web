@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Texas Hold'em Poker{% endblock %}
+
+{% block content %}
+<a href="/games" class="back-btn">
+    <i class="fa-solid fa-arrow-left"></i>
+    ゲーム一覧へ戻る
+</a>
+
+<section class="rule-page">
+
+  <h1>Texas Hold'em Poker</h1>
+  <p class="lead">
+    世界で最も人気のポーカー。相手との駆け引きと読み合いが魅力。
+  </p>
+
+  <div class="rule-box">
+    <h2>基本ルール</h2>
+    <p>
+      各プレイヤーに2枚の手札が配られます。
+      テーブル中央に公開される5枚のカードと組み合わせ、
+      最も強い5枚の役を作った人が勝利です。
+    </p>
+  </div>
+
+  <div class="rule-box">
+    <h2>勝利条件</h2>
+    <ul>
+      <li>最後まで残ったプレイヤー</li>
+      <li>ショーダウンで最も強い役を持つプレイヤー</li>
+    </ul>
+  </div>
+
+  <div class="rule-box">
+    <h2>ゲームの流れ</h2>
+
+    <h3 class="option-title">① プリフロップ</h3>
+    <p>
+      各プレイヤーに2枚ずつ手札が配られます。
+      最初のベッティングラウンドです。
+    </p>
+
+    <h3 class="option-title">② フロップ</h3>
+    <p>
+      コミュニティカードを3枚公開します。
+    </p>
+
+    <h3 class="option-title">③ ターン</h3>
+    <p>
+      コミュニティカードを1枚追加します。
+    </p>
+
+    <h3 class="option-title">④ リバー</h3>
+    <p>
+      最後のコミュニティカードを1枚追加します。
+    </p>
+
+    <h3 class="option-title">⑤ ショーダウン</h3>
+    <p>
+      手札を公開し、最も強い役のプレイヤーが勝利します。
+    </p>
+  </div>
+
+  <div class="rule-box">
+    <h2>アクション一覧</h2>
+
+    <ul>
+      <li><b>Check</b>：賭けずに手番を回す</li>
+      <li><b>Bet</b>：最初に賭ける</li>
+      <li><b>Call</b>：相手と同額を払う</li>
+      <li><b>Raise</b>：さらに上乗せして賭ける<br>
+        ※現在テーブルに出ている最大Betの倍以上が必要</li>
+      <li><b>Fold</b>：降りる</li>
+      <li><b>All In</b>：持ちチップ全額を賭ける</li>
+    </ul>
+
+  </div>
+
+  <details class="rule-box">
+    <summary>役一覧（強い順）</summary>
+
+    <ol>
+      <li>ロイヤルストレートフラッシュ</li>
+      <li>ストレートフラッシュ</li>
+      <li>フォーカード</li>
+      <li>フルハウス</li>
+      <li>フラッシュ</li>
+      <li>ストレート</li>
+      <li>スリーカード</li>
+      <li>ツーペア</li>
+      <li>ワンペア</li>
+      <li>ハイカード<br>
+      上から順に、A, K, Q, J, 10, 9..., 3, 2</li>
+    </ol>
+
+  </details>
+
+  <details class="rule-box">
+    <summary>ブラインド</summary>
+
+    <h3 class="option-title">スモールブラインド(SB)</h3>
+    <p>
+      ディーラーボタンの左隣が支払います。
+    </p>
+
+    <h3 class="option-title">ビッグブラインド(BB)</h3>
+    <p>
+      SBの左隣が支払います。
+    </p>
+
+    <h3 class="option-title">目的</h3>
+    <p>
+      毎ゲーム必ずポットを作り、
+      ゲームを進行させるための強制ベットです。
+    </p>
+
+  </details>
+
+  <details class="rule-box">
+    <summary>ハウスルール</summary>
+
+    <ul>
+      <li>BBanteを採用しています。<br>
+        ※BBanteとは、BBのポジションはBBと別にante(強制参加費)を払う必要があります。<br>
+        anteはBBと同額です。</li>
+      <li>Potのtaxは5%です。taxは全額JPに追加されます。</li>
+      <li>アクションは発声優先です。</li>
+      <li>特殊ルール：27ボーナス<br>
+        最弱手と呼ばれる27でかつショーダウンで勝利するとPotと別に$720がもらえます。</li>
+      <li>特殊ルール：JP<br>
+        ストレートフラッシュ以上の役でリバーまで戦った後、<br>
+        勝利した場合(リバーで不戦勝も含む)JPがもらえます。<br>
+        JPが$5,000未満であれば$5,000。JPが5,000以上であればその額がもらえます。<br>
+        ロイヤルストレートフラッシュの場合は JP * 1d6 になります。</li>
+    </ul>
+  </details>
+
+    <details class="rule-box">
+    <summary>初心者向けアドバイス</summary>
+    <h3 class="option-title">ハンド</h3>
+    <p>ペアや絵柄以上、高い数字のスーツ(スートがそろっている)場合は参加をお勧めします。</p>
+    <p>逆に、スートがそろっておらず数字が小さい、数字の差が大きいなどの場合は下手に期待すると痛い目を見ます。</p>
+    <h3 class="option-title">bet額</h3>
+    <p>bet額についてはかなり難しいので勉強してください。<br>
+      以下にAIに聞いたpotに対して何%のbetがどのような意味を成すかの例があるためほどほどに参考にしてみてください。<br>
+      また外部サイトですが、参考になるサイトを貼っておきます。</p>
+    <a href="https://note.com/goole/n/ndc8338bdbf1e"
+      style="color: gold">
+      参考になりそうなサイト
+    </a>
+      <p>【ベットサイズ（ポットの◯％）】</p>
+    <p>ポーカーにおいて「ポットの50%」といった表現は、<br>
+      標準的なベットサイズ（特定の役を狙ったり、相手をフォールドさせたりするための金額）を指します。</p>
+    <ul>
+      <li>1/3 ポット（33%）: <br>
+        小さなベット。相手に安い価格でゲームに参加させる（ブラフを誘うなど）目的で使われます。</li>
+      <li>1/2 ポット（50%）: <br>
+        平均的なベット。リスクを抑えつつ、チップを引き出すバランスの良いサイズです。</li>
+      <li>2/3 〜 3/4 ポット（67%〜75%）: <br>
+        大きなベット。相手のコールを難しくし、自分の強い役を保護する目的で使用されます。</li>
+      <li>ポットベット（100%）: <br>
+        現在のポット総額と同額を賭けるアクション。</li>
+    </ul>
+
+  </details>
+
+
+
+</section>
+{% endblock %}

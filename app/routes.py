@@ -71,8 +71,53 @@ def ranking():
     jp = jp_data.point#JPを表示するために取り出す。
     return render_template("ranking.html",users=users,current_user=current_user,jp=jp)
 
+# --- ゲーム一覧表示 ---
+@bp.route('/games')
+def games():
+    return render_template("games.html")
+
+# --- ルール表示---
+@bp.route('/rule_bj')
+def rule_bj():
+    return render_template("rule_bj.html")
+
+@bp.route('/rule_baccarat')
+def rule_baccarat():
+    return render_template("rule_baccarat.html")
+
+@bp.route('/rule_sicbo')
+def rule_sicbo():
+    return "準備中..."
+    return render_template("rule_sicbo.html")
+
+@bp.route('/rule_roulette')
+def rule_roulette():
+    return "準備中..."
+    return render_template("rule_roulette.html")
+
+@bp.route('/rule_craps')
+def rule_craps():
+    return "準備中..."
+    return render_template("rule_craps.html")
+
+@bp.route('/rule_keiba')
+def rule_keiba():
+    return "準備中..."
+    return render_template("rule_keiba.html")
+
+@bp.route('/rule_texas')
+def rule_texas():
+    return render_template("rule_texas.html")
+
+@bp.route('/rule_omaha')
+def rule_omaha():
+    return "準備中..."
+    return render_template("rule_omaha.html")
+
+
 # --- ユーザーname変更 ---
 @bp.route('/change_user_name/<int:id>', methods=["GET","POST"])
+@login_required
 def change_name_user(id):
     if current_user.id != 1:#rootユーザでないときアクセス拒否
         return "403 Forbidden<br> アクセスが拒否されました。<br> [原因]<br> アカウントにアクセス権限がありません。"
@@ -86,6 +131,7 @@ def change_name_user(id):
 
 # --- ユーザーusername変更 ---
 @bp.route('/change_user_username/<int:id>', methods=["GET","POST"])
+@login_required
 def change_username_user(id):
     #自分の画面以外見れない
     if current_user.id == 1:
@@ -104,6 +150,7 @@ def change_username_user(id):
 
 # --- ユーザーPW変更 ---
 @bp.route('/change_user_pw/<int:id>', methods=["GET","POST"])
+@login_required
 def change_pw_user(id):
     #自分の画面以外見れない
     if current_user.id == 1:
@@ -122,6 +169,7 @@ def change_pw_user(id):
 
 # --- ユーザーstation変更 ---
 @bp.route('/change_user_station/<int:id>', methods=["GET","POST"])
+@login_required
 def change_pw_station(id):
     #自分の画面以外見れない
     if current_user.id == 1:

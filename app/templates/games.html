@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}ランキングページ{% endblock %}
+
+{% block content %}
+    <!-- ハンバーガーメニュー -->
+    <div id="menu-button">☰</div>
+
+    <!-- サイドメニュー -->
+    <nav id="side-menu">
+        <a href="/ranking">ランキング</a>
+        <a href="/profile/{{ current_user.id }}">マイページ</a>
+        <a href="/games">ゲーム一覧</a>
+        <a href="/logout">ログアウト</a>
+        {% if current_user.id == 1 %}
+            <hr>
+            <a href="/ticket_all">チケット一覧</a>
+            <a href="/import_users">インポート Users</a>
+            <a href="/import_logs">インポート Logs</a>
+            <a href="/export_csv">エクスポート csv</a>
+        {% endif %}
+    </nav>
+<section class="game-page">
+
+    <h1>Games</h1>
+    <p class="lead">つばきちCasinoで遊べるゲーム</p>
+
+    <div class="game-grid">
+      <article class="game-card">
+        <a href="/rule_bj"> 
+            <div class="game-icon">
+                <i class="fa-solid fa-clover"></i>
+            </div>
+            <h2>
+              Blackjack
+            </h2>
+            <p>21を目指す定番カードゲーム</p>
+        </a>
+      </article>
+    
+
+      <article class="game-card">
+        <a href="/rule_baccarat"> 
+          <div class="game-icon">
+              <i class="fa-solid fa-gem"></i>
+          </div>
+          <h2>
+            Baccarat
+            <span class="game-subtitle">カジノの王様</span>
+          </h2>
+          <p>
+            PlayerかBankerかを<br>
+            予想するゲーム
+          </p>
+        </a>
+      </article>
+
+      <article class="game-card">
+        <a href="/rule_sicbo"> 
+          <div class="game-icon">
+              <i class="fa-solid fa-dice"></i>
+          </div>
+          <h2>SIC Bo</h2>
+          <p>3個のサイコロの出目を予想</p>
+        </a>
+      </article>
+
+      <article class="game-card">
+        <a href="rule_roulette">
+          <div class="game-icon">
+              <i class="fa-solid fa-circle-dot"></i>
+          </div>
+          <h2>
+            Roulette
+              <span class="game-subtitle">カジノの女王</span>
+          </h2>
+          <p>
+            数字や色に賭ける<br>
+            王道カジノゲーム
+          </p>
+        </a>
+      </article>
+
+      <article class="game-card">
+        <a href="rule_cpars">
+          <div class="game-icon">
+              <i class="fa-solid fa-dice-two"></i>
+          </div>
+          <h2>Craps</h2>
+          <p>
+            サイコロの合計で<br>
+            勝負するゲーム
+          </p>
+        </a>
+      </article>
+
+      <article class="game-card">
+        <a href="keiba">
+          <div class="game-icon">
+              <i class="fa-solid fa-horse"></i>
+          </div>
+          <h2>競馬</h2>
+          <p>
+            馬券を購入して<br>
+            レース結果を予想
+          </p>
+        </a>
+      </article>
+
+      <article class="game-card">
+        <a href="rule_texas">
+          <div class="game-icon">
+              <i class="fa-solid fa-crown"></i>
+          </div>
+          <h2>Texas Hold'em Poker</h2>
+          <p>世界で最も人気のポーカー</p>
+        </a>
+      </article>
+
+      <article class="game-card">
+        <a href="rule_omaha">
+          <div class="game-icon">
+              <i class="fa-solid fa-chess-king"></i>
+          </div>
+          <h2>Omaha Hold'em Poker</h2>
+          <p>4枚の手札で戦う戦略的ポーカー</p>
+        </a>
+      </article>
+    </div>
+
+</section>
+{% endblock %}

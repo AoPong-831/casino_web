@@ -466,3 +466,224 @@ button:hover {
 .login-button:hover {
   background: linear-gradient(135deg, #ffd84d, #d4af37);
 }
+/* ------------------------------------------------------------------ */
+/* ゲーム一覧ページ */
+.game-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.game-page h1 {
+    text-align: center;
+    color: gold;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 12px rgba(255,215,0,0.5);
+}
+
+.lead {
+    text-align: center;
+    color: #ccc;
+    margin-bottom: 2rem;
+}
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.game-card {
+    background: linear-gradient(
+        145deg,
+        rgba(20,20,20,0.95),
+        rgba(40,40,40,0.95)
+    );
+
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 18px;
+
+    padding: 1.8rem;
+
+    text-align: center;
+
+    transition: all 0.25s ease;
+
+    box-shadow:
+        0 4px 20px rgba(0,0,0,0.3),
+        0 0 10px rgba(255,215,0,0.05);
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+
+    border-color: gold;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.5),
+        0 0 20px rgba(255,215,0,0.2);
+}
+
+.game-icon {
+    margin-bottom: 1rem;
+}
+
+.game-icon i {
+    font-size: 3rem;
+    color: gold;
+
+    filter: drop-shadow(
+        0 0 10px rgba(255,215,0,0.6)
+    );
+}
+
+.game-card h2 {
+    color: gold;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.game-card p {
+    color: #ddd;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.game-subtitle {
+    display: block;
+
+    font-size: 0.75rem;
+    font-weight: normal;
+
+    color: rgba(255,255,255,0.55);
+
+    margin-top: 4px;
+
+    letter-spacing: 1px;
+}
+/* ------------------------------------------------------------------ */
+/* 各ルールページ */
+.rule-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  color: #fff;
+}
+
+.rule-box {
+  background: rgba(255, 255, 255, 0.06);
+  border-left: 4px solid gold;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.rule-box summary {
+  color: gold;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 1rem 1.2rem;
+  list-style: none;
+}
+/* detailsのデフォルトの三角を消す */
+.rule-box summary::-webkit-details-marker {
+  display: none;
+}
+
+.rule-box summary::after {
+  content: "▼";
+  float: right;
+  transition: 0.2s;
+}
+
+.rule-box[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.rule-box p,
+.rule-box ul,
+.rule-box h3 {
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+}
+
+.rule-box h2 {
+  color: gold;
+  margin-bottom: 0.5rem;
+}
+/* h3の小見出し */
+.option-title {
+    color: gold;
+    font-size: 1rem;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    border-left: 4px solid gold;
+    padding-left: 8px;
+}
+/* ゲーム一覧へ戻るボタン */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 14px;
+
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 999px;
+
+    background: rgba(255,255,255,0.05);
+
+    color: gold;
+    text-decoration: none;
+
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    background: rgba(255,215,0,0.1);
+    border-color: gold;
+}
+
+.back-btn i {
+    font-size: 0.9rem;
+}
+/* バカラの3枚目を引く表 */
+.baccarat-draw-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.baccarat-draw-table th {
+    background: gold;
+    color: #111;
+    padding: 10px;
+    border: 1px solid #333;
+}
+
+.baccarat-draw-table td {
+    padding: 10px;
+    border: 1px solid #555;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.baccarat-draw-table td.stop {
+    color: #999;
+}
+
+.baccarat-draw-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.table-note {
+    font-size: 0.9rem;
+    color: #ddd;
+    margin: 8px 0;
+}
