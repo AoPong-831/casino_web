@@ -1,10 +1,12 @@
 #ルートとバックエンド処理を書く場所
-from flask import Blueprint,render_template, request, redirect, url_for  # type: ignore
+from flask import Blueprint, render_template, request, redirect, url_for, send_file  # type: ignore
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
 from flask import Response#csv用
 import csv#csv用
 from io import TextIOWrapper#csv用
+import io#csv用
+import zipfile#csv用
 from datetime import datetime,timezone,timedelta#ログイン機能用、チケット時間管理用
 from flask import session#ログイン機能用
 #from werkzeug.utils import secure_filename#日程表_画像読み込み用(危険なファイル名{../../}などを除去する)
@@ -424,26 +426,10 @@ def import_users():
 
     return render_template('import_users.html')
 
-# --- CSV_エクスポート_users ---
-@bp.route('/export_users')
-def export_users():
-    users = User.query.all()
-
-    def generate():#この関数で逐次的にcsv文字列を生成
-        yield 'id,name,username,pw,chip,point,last_login,station,fare,icon\n'  # CSVヘッダー
-        for user in users:
-            yield f'{user.id},{user.name},{user.username},{user.pw},{user.chip},{user.point},{user.last_login},{user.station},{user.fare},{user.icon}\n'
-
-    return Response(
-        generate(),
-        mimetype='text/csv',
-        headers={'Content-Disposition': 'attachment; filename=users.csv'}
-    )
-
 # --- CSV_インポート_logs ---
 @bp.route("/import_logs", methods=["GET","POST"])
 def import_logs():
-    db.session.query(Chip_log).delete()#既に存在するChip_log.dbを削除しないと、idがダブてerror
+    db.session.query(Chip_log).delete()#既に存在するChip_log.dbを削除しないと、idがダブってerror
     db.session.commit()
 
     if request.method == 'POST':
@@ -476,41 +462,55 @@ def import_logs():
 
     return render_template('import_logs.html')
 
-# --- CSV_エクスポート_logs ---
-@bp.route('/export_logs')
-def export_logs():
-    logs = Chip_log.query.all()
+# --- CSV_エクスポート ---
+@bp.route('/export_csv')
+def export_csv():
+    #user_csv
+    users = User.query.order_by(User.id).all()
+    logs = Chip_log.query.order_by(Chip_log.id).all()
 
-    def generate():#この関数で逐次的にcsv文字列を生成
-        yield 'id,user_id,user_name,chip_before,chip_after,point_before,point_after,date\n'  # CSVヘッダー
+    today = datetime.now().strftime('%Y%m%d')
+
+    zip_buffer = io.BytesIO()#メモリ上に仮想zipファイルを作成
+
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:
+        # users.csvv
+        user_csv = io.StringIO()
+        user_csv.write(
+            'id,name,username,pw,chip,point,last_login,station,fare,icon\n'
+        )
+
+        for user in users:
+            user_csv.write(
+                f'{user.id},{user.name},{user.username},{user.pw},'
+                f'{user.chip},{user.point},{user.last_login},'
+                f'{user.station},{user.fare},{user.icon}\n'
+            )
+        
+        zf.writestr(f'users_{today}.csv', user_csv.getvalue())
+
+        # chip_logs.csv
+        log_csv = io.StringIO()
+        log_csv.write(
+            'id,user_id,user_name,chip_before,chip_after,point_before.point_after,date\n'
+        )
+
         for log in logs:
-            yield f'{log.id},{log.user_id},{log.user_name},{log.chip_before},{log.chip_after},{log.point_before},{log.point_after},{log.date}\n'
+            log_csv.write(
+                f'{log.id},{log.user_id},{log.user_name},{log.chip_before},{log.chip_after},'
+                f'{log.point_before},{log.point_after},{log.date}\n'
+            )
 
-    return Response(
-        generate(),
-        mimetype='text/csv',
-        headers={'Content-Disposition': 'attachment; filename=chip_log.csv'}
+        zf.writestr(f'chip_logs_{today}.csv', log_csv.getvalue())
+
+    zip_buffer.seek(0)
+
+    return send_file(
+        zip_buffer,
+        mimetype='application/zip',
+        as_attachment=True,
+        download_name=f'casino_data_{today}.zip'
     )
-
-# --- 日程表用_拡張子チェック関数 ---
-#def allowed_file(filename):
-#    return '.' in filename and \
-#           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-#
-# --- 日程表 ---(めんどいので廃案)
-#@bp.route("/calendar", methods=["GET","POST"])
-#def calenar():
-#    if request.method == 'POST':
-#        file = request.files["image"]#ファイル受け取り
-#        if file.filename == '':
-#            return "ファイルが選択されていません", 400
-#        if file and allowed_file(file.filename):
-#            filename = secure_filename(file.filename)
-#            filepath = os.path.join(bp.config["UPLOAD_FOLDER"], filename)
-#            file.save(filepath)
-#        return render_template("calendar.html",current_user=current_user)  
-#    else:#GET
-#        return render_template("calendar.html",current_user=current_user)
 
 
 # --- 初期化用ルート（最初だけ使う） ---
